@@ -9,6 +9,7 @@ package com.mycompany.mazegeneration;
  * @author HAMDANE
  */
 public class MazeModel {
+
     private int ID;
     private String name;
     private int rows;
@@ -72,5 +73,5 @@ public class MazeModel {
     public void setData(String Data) {
         this.Data = Data;
     }
-    
+
 }

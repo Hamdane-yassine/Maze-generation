@@ -16,7 +16,7 @@ import javafx.stage.Screen;
  *
  * @author HAMDANE
  */
-public class MazeGrid extends BorderPane {
+public final class MazeGrid extends BorderPane {
 
     private Canvas canvas;
     private final Color BACKGROUND_COLOR = Color.BLACK;
@@ -25,6 +25,7 @@ public class MazeGrid extends BorderPane {
     private int columns;
     private Cell cells[][];
     private boolean affected = false;
+
     public MazeGrid(int rows, int columns) {
         int w = CalcWidth(columns);
         int h = CalcHeight(rows);
@@ -35,18 +36,14 @@ public class MazeGrid extends BorderPane {
         this.autosize();
         this.InitialCells();
         final AnimationTimer timer = new AnimationTimer() {
+            @Override
             public void handle(long now) {
                 draw(canvas.getGraphicsContext2D());
             }
         };
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Platform.runLater(() -> {
-                timer.start();
-                });
-            }
+        new Thread(() -> {
+            Platform.runLater(timer::start);
         }).start();
     }
 
@@ -76,47 +73,41 @@ public class MazeGrid extends BorderPane {
         this.canvas.setWidth(w);
         this.canvas.setHeight(h);
         this.InitialCells();
-        final AnimationTimer timer = new AnimationTimer() {
+        final AnimationTimer timer;
+        timer = new AnimationTimer() {
+            @Override
             public void handle(long now) {
                 draw(canvas.getGraphicsContext2D());
             }
         };
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Platform.runLater(() -> {
-                timer.start();
-                });
-            }
+        new Thread(() -> {
+            Platform.runLater(timer::start);
         }).start();
     }
-    public void Redraw()
-    {
+
+    public void Redraw() {
         int w = CalcWidth(columns);
         int h = CalcHeight(rows);
         this.canvas.setWidth(w);
         this.canvas.setHeight(h);
         final AnimationTimer timer = new AnimationTimer() {
+            @Override
             public void handle(long now) {
                 draw(canvas.getGraphicsContext2D());
             }
         };
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Platform.runLater(() -> {
-                timer.start();
-                });
-            }
+        new Thread(() -> {
+            Platform.runLater(timer::start);
         }).start();
     }
+
     private void InitialCells() {
         int w = CalcWidth(this.columns);
         int h = CalcHeight(this.rows);
-        int cw = w / this.columns; // cell width
-        int ch = h / this.rows; // cell height
+        int cw = w / this.columns;
+        int ch = h / this.rows;
         this.cells = new Cell[rows][columns];
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
@@ -127,14 +118,6 @@ public class MazeGrid extends BorderPane {
         }
     }
 
-    public void updateCanvas()
-    {
-        int w = CalcWidth(columns);
-        int h = CalcHeight(rows);
-        this.canvas.setWidth(w);
-        this.canvas.setHeight(h);
-        this.setCenter(this.canvas);
-    }
     public Canvas getCanvas() {
         return canvas;
     }

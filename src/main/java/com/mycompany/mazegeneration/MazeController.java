@@ -78,13 +78,13 @@ public class MazeController implements Initializable {
     public void initialize(URL url, ResourceBundle reb) {
 
         this.genslider.valueProperty().addListener((ObservableValue<? extends Number> arg0, Number arg1, Number arg2) -> {
-            int value = (int) this.genslider.getValue();
+            int value = (int) MazeController.this.genslider.getValue();
             int actualvalue = 1;
             if (value < 100) {
                 actualvalue = 100 - value;
             }
-            this.period = actualvalue * 10;
-            this.Vitesse((long) this.period);
+            MazeController.this.period = actualvalue * 10;
+            MazeController.this.Vitesse((long) MazeController.this.period);
         });
         this.LoadMazes();
         this.gridsize.setItems(FXCollections.observableArrayList(new String[]{"10x10", "15x15", "25x25", "50x50", "100x100"}));
@@ -209,7 +209,6 @@ public class MazeController implements Initializable {
     }
 
     public void ExportImage() {
-        SnapshotParameters parameters = new SnapshotParameters();
         WritableImage wi = new WritableImage((int) this.grid.getCanvas().getWidth(), (int) this.grid.getCanvas().getHeight());
         WritableImage snapshot = this.grid.getCanvas().snapshot(new SnapshotParameters(), wi);
         FileChooser fileChooser = new FileChooser();
@@ -218,7 +217,7 @@ public class MazeController implements Initializable {
         File output = fileChooser.showSaveDialog((Stage) this.splitPane.getScene().getWindow());
         try {
             ImageIO.write(SwingFXUtils.fromFXImage(snapshot, null), "png", output);
-        } catch (Exception E) {
+        } catch (IOException E) {
         }
     }
 
@@ -246,7 +245,7 @@ public class MazeController implements Initializable {
 
     public void Save() {
         if (this.grid.isAffected()) {
-            String defaultName = "";
+            String defaultName;
             if (!this.MazeList.isEmpty()) {
                 defaultName = "" + (this.MazeList.get(this.MazeList.size() - 1).getID() + 1);
             } else {
@@ -296,7 +295,6 @@ public class MazeController implements Initializable {
             this.grid.setRows(this.rows);
             this.grid.setColumns(this.columns);
             this.grid.setAffected(true);
-            //this.grid.updateCanvas();
             Cell[][] cells = gson.fromJson(maze.getData(), Cell[][].class);
             this.grid.setCells(cells);
             this.grid.Redraw();
@@ -370,16 +368,16 @@ public class MazeController implements Initializable {
         name.setPrefWidth(157.60);
         name.setResizable(false);
         name.setStyle("-fx-alignment: CENTER;");
-        TableColumn<MazeModel, Integer> rows = new TableColumn<>("Nb lignes");
-        rows.setCellValueFactory(new PropertyValueFactory<>("rows"));
-        rows.setPrefWidth(102.40);
-        rows.setResizable(false);
-        rows.setStyle("-fx-alignment: CENTER;");
-        TableColumn<MazeModel, Integer> columns = new TableColumn<>("Nb colonnes");
-        columns.setCellValueFactory(new PropertyValueFactory<>("columns"));
-        columns.setPrefWidth(102.40);
-        columns.setResizable(false);
-        columns.setStyle("-fx-alignment: CENTER;");
+        TableColumn<MazeModel, Integer> rowscol = new TableColumn<>("Nb lignes");
+        rowscol.setCellValueFactory(new PropertyValueFactory<>("rows"));
+        rowscol.setPrefWidth(102.40);
+        rowscol.setResizable(false);
+        rowscol.setStyle("-fx-alignment: CENTER;");
+        TableColumn<MazeModel, Integer> columnscol = new TableColumn<>("Nb colonnes");
+        columnscol.setCellValueFactory(new PropertyValueFactory<>("columns"));
+        columnscol.setPrefWidth(102.40);
+        columnscol.setResizable(false);
+        columnscol.setStyle("-fx-alignment: CENTER;");
         TableColumn<MazeModel, Integer> Date = new TableColumn<>("Date d'enregistrement");
         Date.setCellValueFactory(new PropertyValueFactory<>("Date"));
         Date.setPrefWidth(192);
@@ -387,8 +385,8 @@ public class MazeController implements Initializable {
         Date.setStyle("-fx-alignment: CENTER;");
         tableView.getColumns().add(Id);
         tableView.getColumns().add(name);
-        tableView.getColumns().add(rows);
-        tableView.getColumns().add(columns);
+        tableView.getColumns().add(rowscol);
+        tableView.getColumns().add(columnscol);
         tableView.getColumns().add(Date);
         tableView.setItems(this.MazeList);
         return tableView;

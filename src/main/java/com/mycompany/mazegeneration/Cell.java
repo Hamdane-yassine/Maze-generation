@@ -18,7 +18,7 @@ public class Cell {
     private int x, y, w, h, i, j;
     private boolean selected, visited;
 
-    private Wall[] walls ;
+    private Wall[] walls;
 
     public Cell(int x, int y, int w, int h, int i, int j, boolean selected, boolean visited, Wall[] walls) {
         super();
@@ -42,10 +42,10 @@ public class Cell {
         this.i = i;
         this.j = j;
         this.walls = new Wall[4];
-        this.walls[0]  = new Wall(false);
-        this.walls[1]  = new Wall(false);
-        this.walls[2]  = new Wall(false);
-        this.walls[3]  = new Wall(false);
+        this.walls[0] = new Wall(false);
+        this.walls[1] = new Wall(false);
+        this.walls[2] = new Wall(false);
+        this.walls[3] = new Wall(false);
     }
 
     public void draw(GraphicsContext gc) {
@@ -62,9 +62,9 @@ public class Cell {
         // show walls
         int x1 = 0, y1 = 0, x2 = 0, y2 = 0;
         gc.setStroke(WALL_COLOR);
-        for (int i = 0; i < this.walls.length; i++) {
-            if (!this.walls[i].isBroken()) {
-                switch (i) {
+        for (int k = 0; k < this.walls.length; k++) {
+            if (!this.walls[k].isBroken()) {
+                switch (k) {
                     case TOP_WALL:
                         x1 = x;
                         y1 = y;

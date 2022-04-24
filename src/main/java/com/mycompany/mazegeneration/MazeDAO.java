@@ -63,24 +63,19 @@ public class MazeDAO {
         }
         return list;
     }
-    
-     public static void DeleteMaze(int ID)
-   {
-       try
-        (
-          Connection con = MazeDAO.connect();
-          PreparedStatement p = con.prepareStatement("Delete from maze where ID=?");
-        )
-        {
-         p.setInt(1, ID);
-         p.execute();
-        }catch(SQLException sq)
-        {
-           Alert ms1 = new Alert(javafx.scene.control.Alert.AlertType.ERROR);
-           ms1.setTitle("Connection failed");
-           ms1.setHeaderText("Operation Failed !");
-           ms1.setContentText(sq.getMessage());
-           ms1.showAndWait(); 
+
+    public static void DeleteMaze(int ID) {
+        try (
+            Connection con = MazeDAO.connect();
+            PreparedStatement p = con.prepareStatement("Delete from maze where ID=?");) {
+            p.setInt(1, ID);
+            p.execute();
+        } catch (SQLException sq) {
+            Alert ms1 = new Alert(javafx.scene.control.Alert.AlertType.ERROR);
+            ms1.setTitle("Connection failed");
+            ms1.setHeaderText("Operation Failed !");
+            ms1.setContentText(sq.getMessage());
+            ms1.showAndWait();
         }
-   }
+    }
 }
