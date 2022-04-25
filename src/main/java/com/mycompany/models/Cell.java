@@ -21,8 +21,8 @@ public class Cell {
     private boolean poped;
     private Wall[] walls;
     private int cost;
-
-    public Cell(int x, int y, int w, int h, int i, int j, int id, boolean selected, boolean visited, boolean poped, Wall[] walls, int cost) {
+    private boolean linked=false;
+    public Cell(int x, int y, int w, int h, int i, int j, int id, boolean selected, boolean visited, boolean poped, Wall[] walls, int cost,boolean linked) {
         super();
         this.x = x;
         this.y = y;
@@ -36,6 +36,15 @@ public class Cell {
         this.poped = poped;
         this.walls = walls;
         this.cost = cost;
+        this.linked=linked;
+    }
+
+    public void setLinked(boolean linked) {
+        this.linked = linked;
+    }
+
+    public boolean isLinked() {
+        return linked;
     }
 
     public void setCost(int cost) {
@@ -145,6 +154,8 @@ public class Cell {
             this.breakWall(BOTTOM_WALL);
             to.breakWall(TOP_WALL);
         }
+        this.linked=true;
+        to.linked=true;
     }
 
     public void leave() {

@@ -11,9 +11,11 @@ import com.mycompany.models.MazeGrid;
 import com.mycompany.generation.RecursiveBacktracker;
 import com.mycompany.generation.Kruskals;
 import com.google.gson.Gson;
+import com.mycompany.generation.AldousBroder;
 import com.mycompany.generation.GenerationAlgorithm;
 import com.mycompany.generation.SimplifiedPrims;
 import com.mycompany.generation.TruePrims;
+import com.mycompany.generation.Wilsons;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -98,7 +100,7 @@ public class MazeController implements Initializable {
         this.LoadMazes();
         this.gridsize.setItems(FXCollections.observableArrayList(new String[]{"10x10", "15x15", "25x25", "50x50", "100x100"}));
         this.gridsize.getSelectionModel().selectFirst();
-        this.genAlgo.setItems(FXCollections.observableArrayList(new String[]{"Recursive Backtracker", "Kruskal’s", "Simplified Prim’s", "True Prim’s"}));
+        this.genAlgo.setItems(FXCollections.observableArrayList(new String[]{"Recursive Backtracker", "Kruskal’s", "Simplified Prim’s", "True Prim’s","Aldous-Broder","Wilson’s"}));
         this.genAlgo.getSelectionModel().selectFirst();
         this.grid = new MazeGrid(rows, columns);
         this.grid.setPadding(new Insets(10, 10, 10, 10));
@@ -164,6 +166,20 @@ public class MazeController implements Initializable {
                 this.generate();
             }
             break;
+            case "Aldous-Broder": {
+                if (this.GenAlgo == null) {
+                    this.GenAlgo = new AldousBroder(this.grid.getCells(), this.rows, this.columns);
+                }
+                this.generate();
+            }
+            break;
+            case "Wilson’s": {
+                if (this.GenAlgo == null) {
+                    this.GenAlgo = new Wilsons(this.grid.getCells(), this.rows, this.columns);
+                }
+                this.generate();
+            }
+            break;
 
         }
     }
@@ -183,6 +199,12 @@ public class MazeController implements Initializable {
                     break;
                 case "True Prim’s":
                     this.GenAlgo = new TruePrims(this.grid.getCells(), this.rows, this.columns);
+                    break;
+                case "Aldous-Broder":
+                    this.GenAlgo = new TruePrims(this.grid.getCells(), this.rows, this.columns);
+                    break;
+                case "Wilson’s":
+                    this.GenAlgo = new Wilsons(this.grid.getCells(), this.rows, this.columns);
                     break;
 
             }
