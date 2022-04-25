@@ -12,6 +12,8 @@ import com.mycompany.generation.RecursiveBacktracker;
 import com.mycompany.generation.Kruskals;
 import com.google.gson.Gson;
 import com.mycompany.generation.GenerationAlgorithm;
+import com.mycompany.generation.SimplifiedPrims;
+import com.mycompany.generation.TruePrims;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -96,7 +98,7 @@ public class MazeController implements Initializable {
         this.LoadMazes();
         this.gridsize.setItems(FXCollections.observableArrayList(new String[]{"10x10", "15x15", "25x25", "50x50", "100x100"}));
         this.gridsize.getSelectionModel().selectFirst();
-        this.genAlgo.setItems(FXCollections.observableArrayList(new String[]{"Recursive Backtracker", "Kruskal’s Algorithm"}));
+        this.genAlgo.setItems(FXCollections.observableArrayList(new String[]{"Recursive Backtracker", "Kruskal’s", "Simplified Prim’s", "True Prim’s"}));
         this.genAlgo.getSelectionModel().selectFirst();
         this.grid = new MazeGrid(rows, columns);
         this.grid.setPadding(new Insets(10, 10, 10, 10));
@@ -112,69 +114,21 @@ public class MazeController implements Initializable {
         this.resetTimer();
         String selectedSize = this.gridsize.getSelectionModel().getSelectedItem().toString();
         switch (selectedSize) {
-            case "10x10": {
-                if (this.rows != 10 && this.columns != 10 || this.grid.isAffected()) {
-                    this.grid.setAffected(false);
-                    this.rows = 10;
-                    this.columns = 10;
-                    this.grid.setRows(10);
-                    this.grid.setColumns(10);
-                    this.grid.Repaint();
-                    this.ResetAlgorithms();
-                }
-            }
-            break;
-            case "15x15": {
-                if (this.rows != 15 && this.columns != 15 || this.grid.isAffected()) {
-                    this.grid.setAffected(false);
-                    this.rows = 15;
-                    this.columns = 15;
-                    this.grid.setRows(15);
-                    this.grid.setColumns(15);
-                    this.grid.Repaint();
-                    this.ResetAlgorithms();
-                }
-            }
-            break;
-            case "25x25": {
-                if (this.rows != 25 && this.columns != 25 || this.grid.isAffected()) {
-                    this.grid.setAffected(false);
-                    this.rows = 25;
-                    this.columns = 25;
-                    this.grid.setRows(25);
-                    this.grid.setColumns(25);
-                    this.grid.Repaint();
-                    this.ResetAlgorithms();
-                }
-            }
-            ;
-            break;
-            case "50x50": {
-                if (this.rows != 50 && this.columns != 50 || this.grid.isAffected()) {
-                    this.grid.setAffected(false);
-                    this.rows = 50;
-                    this.columns = 50;
-                    this.grid.setRows(50);
-                    this.grid.setColumns(50);
-                    this.grid.Repaint();
-                    this.ResetAlgorithms();
-                }
-            }
-            ;
-            break;
-            case "100x100": {
-                if (this.rows != 100 && this.columns != 100 || this.grid.isAffected()) {
-                    this.grid.setAffected(false);
-                    this.rows = 100;
-                    this.columns = 100;
-                    this.grid.setRows(100);
-                    this.grid.setColumns(100);
-                    this.grid.Repaint();
-                    this.ResetAlgorithms();
-                }
-            }
-            ;
-            break;
+            case "10x10":
+                this.resetGrid(10, 10);
+                break;
+            case "15x15":
+                this.resetGrid(15, 15);
+                break;
+            case "25x25":
+                this.resetGrid(25, 25);
+                break;
+            case "50x50":
+                this.resetGrid(50, 50);
+                break;
+            case "100x100":
+                this.resetGrid(100, 100);
+                break;
         }
     }
 
@@ -189,9 +143,23 @@ public class MazeController implements Initializable {
 
             }
             break;
-            case "Kruskal’s Algorithm": {
+            case "Kruskal’s": {
                 if (this.GenAlgo == null) {
                     this.GenAlgo = new Kruskals(this.grid.getCells(), this.rows, this.columns);
+                }
+                this.generate();
+            }
+            break;
+            case "Simplified Prim’s": {
+                if (this.GenAlgo == null) {
+                    this.GenAlgo = new SimplifiedPrims(this.grid.getCells(), this.rows, this.columns);
+                }
+                this.generate();
+            }
+            break;
+            case "True Prim’s": {
+                if (this.GenAlgo == null) {
+                    this.GenAlgo = new TruePrims(this.grid.getCells(), this.rows, this.columns);
                 }
                 this.generate();
             }
@@ -204,10 +172,18 @@ public class MazeController implements Initializable {
         if (this.GenAlgo == null) {
             String selectedSize = this.genAlgo.getSelectionModel().getSelectedItem().toString();
             switch (selectedSize) {
-                case "Recursive Backtracker": this.GenAlgo = new RecursiveBacktracker(this.grid.getCells(), rows, columns);
-                break;
-                case "Kruskal’s Algorithm": this.GenAlgo = new Kruskals(this.grid.getCells(), this.rows, this.columns);
-                break;
+                case "Recursive Backtracker":
+                    this.GenAlgo = new RecursiveBacktracker(this.grid.getCells(), rows, columns);
+                    break;
+                case "Kruskal’s":
+                    this.GenAlgo = new Kruskals(this.grid.getCells(), this.rows, this.columns);
+                    break;
+                case "Simplified Prim’s":
+                    this.GenAlgo = new SimplifiedPrims(this.grid.getCells(), this.rows, this.columns);
+                    break;
+                case "True Prim’s":
+                    this.GenAlgo = new TruePrims(this.grid.getCells(), this.rows, this.columns);
+                    break;
 
             }
         }
@@ -417,13 +393,25 @@ public class MazeController implements Initializable {
                         Platform.runLater(() -> {
                             if (GenAlgo.isFinished()) {
                                 myRepeatingTimer.cancel();
-                            }else{
+                            } else {
                                 GenAlgo.update();
                             }
                         });
                     }
                 }, 0, period);
             }
+        }
+    }
+
+    public void resetGrid(int rows, int columns) {
+        if (this.rows != rows && this.columns != columns || this.grid.isAffected()) {
+            this.grid.setAffected(false);
+            this.rows = rows;
+            this.columns = columns;
+            this.grid.setRows(rows);
+            this.grid.setColumns(columns);
+            this.grid.Repaint();
+            this.ResetAlgorithms();
         }
     }
 }

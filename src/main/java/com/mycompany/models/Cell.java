@@ -16,12 +16,13 @@ public class Cell {
     public static final byte LEFT_WALL = 2;
     public static final byte RIGHT_WALL = 3;
 
-    private int x, y, w, h, i, j,id;
+    private int x, y, w, h, i, j, id;
     private boolean selected, visited;
     private boolean poped;
     private Wall[] walls;
+    private int cost;
 
-    public Cell(int x, int y, int w, int h, int i, int j,int id, boolean selected, boolean visited, boolean poped, Wall[] walls) {
+    public Cell(int x, int y, int w, int h, int i, int j, int id, boolean selected, boolean visited, boolean poped, Wall[] walls, int cost) {
         super();
         this.x = x;
         this.y = y;
@@ -29,15 +30,23 @@ public class Cell {
         this.h = h;
         this.i = i;
         this.j = j;
-        this.id=id;
+        this.id = id;
         this.selected = selected;
         this.visited = visited;
         this.poped = poped;
         this.walls = walls;
+        this.cost = cost;
     }
 
-    
-    public Cell(int x, int y, int w, int h, int i, int j,int id) {
+    public void setCost(int cost) {
+        this.cost = cost;
+    }
+
+    public int getCost() {
+        return cost;
+    }
+
+    public Cell(int x, int y, int w, int h, int i, int j, int id) {
         super();
         this.x = x;
         this.y = y;
@@ -45,7 +54,7 @@ public class Cell {
         this.h = h;
         this.i = i;
         this.j = j;
-        this.id=id;
+        this.id = id;
         this.walls = new Wall[4];
         this.walls[0] = new Wall(false);
         this.walls[1] = new Wall(false);
@@ -60,7 +69,7 @@ public class Cell {
     public int getId() {
         return id;
     }
-    
+
     public void setPoped(boolean poped) {
         this.poped = poped;
     }
@@ -71,11 +80,11 @@ public class Cell {
 
     public void draw(GraphicsContext gc) {
         // show cell
-        if(visited && !selected){
+        if (visited && !selected) {
             gc.setFill(VISITED_COLOR);
-        }else if(selected){
+        } else if (selected) {
             gc.setFill(SELECTED_COLOR);
-        }else{
+        } else {
             gc.setFill(UNVISITED_COLOR);
         }
         gc.fillRect(x, y, w, h);
