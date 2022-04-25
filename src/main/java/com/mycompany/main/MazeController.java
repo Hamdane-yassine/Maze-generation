@@ -2,9 +2,16 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXML2.java to edit this template
  */
-package com.mycompany.mazegeneration;
+package com.mycompany.main;
 
+import com.mycompany.database.MazeDAO;
+import com.mycompany.models.Cell;
+import com.mycompany.models.MazeModel;
+import com.mycompany.models.MazeGrid;
+import com.mycompany.generation.RecursiveBacktracker;
+import com.mycompany.generation.Kruskals;
 import com.google.gson.Gson;
+import com.mycompany.generation.GenerationAlgorithm;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -51,7 +58,7 @@ public class MazeController implements Initializable {
     private int rows = 10;
     private int columns = 10;
     private MazeGrid grid;
-    private RecursiveBacktracker rb;
+    private GenerationAlgorithm GenAlgo;
     private Timer myRepeatingTimer;
     private int period = 500;
     private boolean hasSteped = false;
@@ -89,7 +96,7 @@ public class MazeController implements Initializable {
         this.LoadMazes();
         this.gridsize.setItems(FXCollections.observableArrayList(new String[]{"10x10", "15x15", "25x25", "50x50", "100x100"}));
         this.gridsize.getSelectionModel().selectFirst();
-        this.genAlgo.setItems(FXCollections.observableArrayList(new String[]{"Recursive Backtracker"}));
+        this.genAlgo.setItems(FXCollections.observableArrayList(new String[]{"Recursive Backtracker", "Kruskal’s Algorithm"}));
         this.genAlgo.getSelectionModel().selectFirst();
         this.grid = new MazeGrid(rows, columns);
         this.grid.setPadding(new Insets(10, 10, 10, 10));
@@ -172,38 +179,42 @@ public class MazeController implements Initializable {
     }
 
     public void MazeGeneration() {
-        if (!this.grid.isAffected() || this.hasSteped) {
-            this.hasSteped = false;
-            if (this.rb == null) {
-                this.rb = new RecursiveBacktracker(columns, rows, this.grid.getCells());
-                this.grid.setAffected(true);
-            }
-            if (!this.rb.isFinished()) {
-                this.myRepeatingTimer = new Timer();
-                myRepeatingTimer.scheduleAtFixedRate(new TimerTask() {
-                    @Override
-                    public void run() {
-                        rb.update();
-                        Platform.runLater(() -> {
-                            if (rb.isFinished()) {
-                                myRepeatingTimer.cancel();
-                            }
-                        });
-                    }
-                }, 0, period);
-            }
-        }
+        String selectedSize = this.genAlgo.getSelectionModel().getSelectedItem().toString();
+        switch (selectedSize) {
+            case "Recursive Backtracker": {
+                if (this.GenAlgo == null) {
+                    this.GenAlgo = new RecursiveBacktracker(this.grid.getCells(), rows, columns);
+                }
+                this.generate();
 
+            }
+            break;
+            case "Kruskal’s Algorithm": {
+                if (this.GenAlgo == null) {
+                    this.GenAlgo = new Kruskals(this.grid.getCells(), this.rows, this.columns);
+                }
+                this.generate();
+            }
+            break;
+
+        }
     }
 
     public void Step() {
-        if (this.rb == null) {
-            this.rb = new RecursiveBacktracker(columns, rows, this.grid.getCells());
+        if (this.GenAlgo == null) {
+            String selectedSize = this.genAlgo.getSelectionModel().getSelectedItem().toString();
+            switch (selectedSize) {
+                case "Recursive Backtracker": this.GenAlgo = new RecursiveBacktracker(this.grid.getCells(), rows, columns);
+                break;
+                case "Kruskal’s Algorithm": this.GenAlgo = new Kruskals(this.grid.getCells(), this.rows, this.columns);
+                break;
+
+            }
         }
-        if (!this.rb.isFinished()) {
+        if (!this.GenAlgo.isFinished()) {
             this.resetTimer();
             this.grid.setAffected(true);
-            this.rb.update();
+            this.GenAlgo.update();
             this.hasSteped = true;
         }
     }
@@ -222,19 +233,19 @@ public class MazeController implements Initializable {
     }
 
     public void ResetAlgorithms() {
-        this.rb = null;
+        this.GenAlgo = null;
     }
 
     public void Vitesse(long period) {
-        if (this.rb != null && !this.rb.isFinished() && !this.hasSteped) {
+        if (this.GenAlgo != null && !this.GenAlgo.isFinished() && !this.hasSteped) {
             this.myRepeatingTimer.cancel();
             this.myRepeatingTimer = new Timer();
             this.myRepeatingTimer.scheduleAtFixedRate(new TimerTask() {
                 @Override
                 public void run() {
                     Platform.runLater(() -> {
-                        rb.update();
-                        if (rb.isFinished()) {
+                        GenAlgo.update();
+                        if (GenAlgo.isFinished()) {
                             myRepeatingTimer.cancel();
                         }
                     });
@@ -390,5 +401,29 @@ public class MazeController implements Initializable {
         tableView.getColumns().add(Date);
         tableView.setItems(this.MazeList);
         return tableView;
+    }
+
+    public void generate() {
+        if (!this.grid.isAffected() || this.hasSteped) {
+            this.hasSteped = false;
+            if (!this.grid.isAffected()) {
+                this.grid.setAffected(true);
+            }
+            if (!this.GenAlgo.isFinished()) {
+                this.myRepeatingTimer = new Timer();
+                myRepeatingTimer.scheduleAtFixedRate(new TimerTask() {
+                    @Override
+                    public void run() {
+                        Platform.runLater(() -> {
+                            if (GenAlgo.isFinished()) {
+                                myRepeatingTimer.cancel();
+                            }else{
+                                GenAlgo.update();
+                            }
+                        });
+                    }
+                }, 0, period);
+            }
+        }
     }
 }

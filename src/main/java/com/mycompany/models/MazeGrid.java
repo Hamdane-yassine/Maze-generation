@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.mycompany.mazegeneration;
+package com.mycompany.models;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
@@ -108,12 +108,14 @@ public final class MazeGrid extends BorderPane {
         int h = CalcHeight(this.rows);
         int cw = w / this.columns;
         int ch = h / this.rows;
+        int id=0;
         this.cells = new Cell[rows][columns];
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
                 int x = j * cw;
                 int y = i * ch;
-                cells[i][j] = new Cell(x, y, cw, ch, i, j);
+                cells[i][j] = new Cell(x, y, cw, ch, i, j,id);
+                id++;
             }
         }
     }

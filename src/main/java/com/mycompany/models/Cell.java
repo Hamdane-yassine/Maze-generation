@@ -1,4 +1,4 @@
-package com.mycompany.mazegeneration;
+package com.mycompany.models;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -8,6 +8,7 @@ public class Cell {
     public static Color VISITED_COLOR = Color.WHITE;
     public static Color UNVISITED_COLOR = Color.WHITE;
     public static Color SELECTED_COLOR = Color.BISQUE;
+    public static Color POPED_UP = Color.WHITE;
     public static Color WALL_COLOR = Color.BLACK;
 
     public static final byte TOP_WALL = 0;
@@ -15,12 +16,12 @@ public class Cell {
     public static final byte LEFT_WALL = 2;
     public static final byte RIGHT_WALL = 3;
 
-    private int x, y, w, h, i, j;
+    private int x, y, w, h, i, j,id;
     private boolean selected, visited;
-
+    private boolean poped;
     private Wall[] walls;
 
-    public Cell(int x, int y, int w, int h, int i, int j, boolean selected, boolean visited, Wall[] walls) {
+    public Cell(int x, int y, int w, int h, int i, int j,int id, boolean selected, boolean visited, boolean poped, Wall[] walls) {
         super();
         this.x = x;
         this.y = y;
@@ -28,12 +29,15 @@ public class Cell {
         this.h = h;
         this.i = i;
         this.j = j;
+        this.id=id;
         this.selected = selected;
         this.visited = visited;
+        this.poped = poped;
         this.walls = walls;
     }
 
-    public Cell(int x, int y, int w, int h, int i, int j) {
+    
+    public Cell(int x, int y, int w, int h, int i, int j,int id) {
         super();
         this.x = x;
         this.y = y;
@@ -41,6 +45,7 @@ public class Cell {
         this.h = h;
         this.i = i;
         this.j = j;
+        this.id=id;
         this.walls = new Wall[4];
         this.walls[0] = new Wall(false);
         this.walls[1] = new Wall(false);
@@ -48,13 +53,29 @@ public class Cell {
         this.walls[3] = new Wall(false);
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
+    }
+    
+    public void setPoped(boolean poped) {
+        this.poped = poped;
+    }
+
+    public boolean isPoped() {
+        return poped;
+    }
+
     public void draw(GraphicsContext gc) {
         // show cell
-        if (visited && !selected) {
+        if(visited && !selected){
             gc.setFill(VISITED_COLOR);
-        } else if (selected) {
+        }else if(selected){
             gc.setFill(SELECTED_COLOR);
-        } else {
+        }else{
             gc.setFill(UNVISITED_COLOR);
         }
         gc.fillRect(x, y, w, h);
