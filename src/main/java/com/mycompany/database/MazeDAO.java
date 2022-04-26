@@ -26,16 +26,17 @@ public class MazeDAO {
         return DriverManager.getConnection("jdbc:sqlite:mazes.db");
     }
 
-    public static void SaveMaze(String Name, int rows, int columns, String data) {
+    public static void SaveMaze(String Name,String algo, int rows, int columns, String data) {
         try (
             Connection con = connect();
-            PreparedStatement p = con.prepareStatement("Insert Into maze(Name,Rows,Columns,Date,Data) values (?,?,?,?,?)");) {
+            PreparedStatement p = con.prepareStatement("Insert Into maze(Name,Rows,Columns,Date,Algo,Data) values (?,?,?,?,?,?)");) {
             p.setString(1, Name);
             p.setInt(2, rows);
             p.setInt(3, columns);
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
             p.setString(4, dtf.format(LocalDateTime.now()));
-            p.setString(5, data);
+            p.setString(5, algo);
+            p.setString(6, data);
             p.execute();
         } catch (SQLException sq) {
             Alert ms1 = new Alert(javafx.scene.control.Alert.AlertType.ERROR);
@@ -53,7 +54,7 @@ public class MazeDAO {
             PreparedStatement p = con.prepareStatement("Select * from maze");) {
             ResultSet r = p.executeQuery();
             while (r.next()) {
-                list.add(new MazeModel(r.getInt("ID"), r.getString("Name"), r.getInt("Rows"), r.getInt("Columns"), r.getString("Date"), r.getString("Data")));
+                list.add(new MazeModel(r.getInt("ID"), r.getString("Name"), r.getInt("Rows"), r.getInt("Columns"), r.getString("Date"),r.getString("Algo"),r.getString("Data")));
             }
         } catch (SQLException sq) {
             Alert ms1 = new Alert(javafx.scene.control.Alert.AlertType.ERROR);
@@ -79,4 +80,5 @@ public class MazeDAO {
             ms1.showAndWait();
         }
     }
+    
 }

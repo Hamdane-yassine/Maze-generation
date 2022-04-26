@@ -17,6 +17,7 @@ public class Wilsons extends GenerationAlgorithm {
     private ArrayList<Cell> univisted;
     private final Random random = new Random();
     private Cell SelectedCell;
+
     public Wilsons(Cell[][] cells, int rows, int columns) {
         super(cells, rows, columns);
         this.univisted = new ArrayList<>();
@@ -26,19 +27,18 @@ public class Wilsons extends GenerationAlgorithm {
             }
         }
         Cell first = this.univisted.get(random.nextInt(this.univisted.size()));
+        this.SelectedCell = first;
         this.univisted.remove(first);
     }
 
     @Override
     public void update() {
-        if(this.SelectedCell!=null)
-            this.SelectedCell.leave();
+        this.SelectedCell.leave();
         Cell cell = this.univisted.get(random.nextInt(this.univisted.size()));
         cell.visit();
-        this.SelectedCell=cell;
+        this.SelectedCell = cell;
         ArrayList<Cell> path = new ArrayList<>();
         path.add(cell);
-        cell.visit();
         while (this.univisted.contains(cell)) {
             ArrayList<Cell> neighbours = calculateNeighbours(cell);
             cell = neighbours.get(random.nextInt(neighbours.size()));
@@ -52,10 +52,11 @@ public class Wilsons extends GenerationAlgorithm {
         }
         for (int i = 0; i < path.size() - 1; i++) {
             path.get(i).link(path.get(i + 1));
+            path.get(i).setVisited(true);
+            path.get(i+1).setVisited(true);
             this.univisted.remove(path.get(i));
         }
-        if(this.univisted.isEmpty())
-        {
+        if (this.univisted.isEmpty()) {
             this.setFinished(true);
             this.SelectedCell.leave();
         }

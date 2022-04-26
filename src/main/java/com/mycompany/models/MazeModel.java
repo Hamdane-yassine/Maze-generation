@@ -15,15 +15,25 @@ public class MazeModel {
     private int rows;
     private int columns;
     private String Date;
+    private String Algo;
     private String Data;
 
-    public MazeModel(int ID, String name, int rows, int columns, String Date, String Data) {
+    public MazeModel(int ID, String name, int rows, int columns, String Date, String Algo, String Data) {
         this.ID = ID;
         this.name = name;
         this.rows = rows;
         this.columns = columns;
         this.Date = Date;
+        this.Algo = Algo;
         this.Data = Data;
+    }
+
+    public String getAlgo() {
+        return Algo;
+    }
+
+    public void setAlgo(String Algo) {
+        this.Algo = Algo;
     }
 
     public int getID() {

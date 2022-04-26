@@ -6,7 +6,7 @@ import javafx.scene.paint.Color;
 public class Cell {
 
     public static Color VISITED_COLOR = Color.WHITE;
-    public static Color UNVISITED_COLOR = Color.WHITE;
+    public static Color UNVISITED_COLOR =Color.FLORALWHITE;
     public static Color SELECTED_COLOR = Color.BISQUE;
     public static Color POPED_UP = Color.WHITE;
     public static Color WALL_COLOR = Color.BLACK;

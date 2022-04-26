@@ -62,12 +62,13 @@ public class MazeController implements Initializable {
     private int rows = 10;
     private int columns = 10;
     private MazeGrid grid;
-    private GenerationAlgorithm GenAlgo;
-    private Timer myRepeatingTimer;
+    private GenerationAlgorithm genAlgo;
+    private Timer timer;
     private int period = 500;
     private boolean hasSteped = false;
     private int MazeId = -1;
     private ObservableList<MazeModel> MazeList;
+    private String algo;
     @FXML
     VBox leftPane;
     @FXML
@@ -79,7 +80,7 @@ public class MazeController implements Initializable {
     @FXML
     ComboBox gridsize;
     @FXML
-    ComboBox genAlgo;
+    ComboBox selectedgenAlgo;
     @FXML
     ComboBox savebox;
     @FXML
@@ -100,8 +101,8 @@ public class MazeController implements Initializable {
         this.LoadMazes();
         this.gridsize.setItems(FXCollections.observableArrayList(new String[]{"10x10", "15x15", "25x25", "50x50", "100x100"}));
         this.gridsize.getSelectionModel().selectFirst();
-        this.genAlgo.setItems(FXCollections.observableArrayList(new String[]{"Recursive Backtracker", "Kruskal’s", "Simplified Prim’s", "True Prim’s","Aldous-Broder","Wilson’s"}));
-        this.genAlgo.getSelectionModel().selectFirst();
+        this.selectedgenAlgo.setItems(FXCollections.observableArrayList(new String[]{"Recursive Backtracker", "Kruskal’s", "Simplified Prim’s", "True Prim’s", "Aldous-Broder", "Wilson’s"}));
+        this.selectedgenAlgo.getSelectionModel().selectFirst();
         this.grid = new MazeGrid(rows, columns);
         this.grid.setPadding(new Insets(10, 10, 10, 10));
         this.scrollmaze.setContent(grid);
@@ -111,6 +112,7 @@ public class MazeController implements Initializable {
         this.scrollpane.minWidthProperty().bind(splitPane.widthProperty().multiply(0.225));
     }
 
+    //Grid management
     public void UpdateGrid() {
         this.MazeId = -1;
         this.resetTimer();
@@ -134,162 +136,16 @@ public class MazeController implements Initializable {
         }
     }
 
-    public void MazeGeneration() {
-        String selectedSize = this.genAlgo.getSelectionModel().getSelectedItem().toString();
-        switch (selectedSize) {
-            case "Recursive Backtracker": {
-                if (this.GenAlgo == null) {
-                    this.GenAlgo = new RecursiveBacktracker(this.grid.getCells(), rows, columns);
-                }
-                this.generate();
-
-            }
-            break;
-            case "Kruskal’s": {
-                if (this.GenAlgo == null) {
-                    this.GenAlgo = new Kruskals(this.grid.getCells(), this.rows, this.columns);
-                }
-                this.generate();
-            }
-            break;
-            case "Simplified Prim’s": {
-                if (this.GenAlgo == null) {
-                    this.GenAlgo = new SimplifiedPrims(this.grid.getCells(), this.rows, this.columns);
-                }
-                this.generate();
-            }
-            break;
-            case "True Prim’s": {
-                if (this.GenAlgo == null) {
-                    this.GenAlgo = new TruePrims(this.grid.getCells(), this.rows, this.columns);
-                }
-                this.generate();
-            }
-            break;
-            case "Aldous-Broder": {
-                if (this.GenAlgo == null) {
-                    this.GenAlgo = new AldousBroder(this.grid.getCells(), this.rows, this.columns);
-                }
-                this.generate();
-            }
-            break;
-            case "Wilson’s": {
-                if (this.GenAlgo == null) {
-                    this.GenAlgo = new Wilsons(this.grid.getCells(), this.rows, this.columns);
-                }
-                this.generate();
-            }
-            break;
-
+    public void resetGrid(int rows, int columns) {
+        if (this.rows != rows && this.columns != columns || this.grid.isAffected()) {
+            this.grid.setAffected(false);
+            this.rows = rows;
+            this.columns = columns;
+            this.grid.setRows(rows);
+            this.grid.setColumns(columns);
+            this.grid.Repaint();
+            this.ResetAlgorithms();
         }
-    }
-
-    public void Step() {
-        if (this.GenAlgo == null) {
-            String selectedSize = this.genAlgo.getSelectionModel().getSelectedItem().toString();
-            switch (selectedSize) {
-                case "Recursive Backtracker":
-                    this.GenAlgo = new RecursiveBacktracker(this.grid.getCells(), rows, columns);
-                    break;
-                case "Kruskal’s":
-                    this.GenAlgo = new Kruskals(this.grid.getCells(), this.rows, this.columns);
-                    break;
-                case "Simplified Prim’s":
-                    this.GenAlgo = new SimplifiedPrims(this.grid.getCells(), this.rows, this.columns);
-                    break;
-                case "True Prim’s":
-                    this.GenAlgo = new TruePrims(this.grid.getCells(), this.rows, this.columns);
-                    break;
-                case "Aldous-Broder":
-                    this.GenAlgo = new TruePrims(this.grid.getCells(), this.rows, this.columns);
-                    break;
-                case "Wilson’s":
-                    this.GenAlgo = new Wilsons(this.grid.getCells(), this.rows, this.columns);
-                    break;
-
-            }
-        }
-        if (!this.GenAlgo.isFinished()) {
-            this.resetTimer();
-            this.grid.setAffected(true);
-            this.GenAlgo.update();
-            this.hasSteped = true;
-        }
-    }
-
-    public void ExportImage() {
-        WritableImage wi = new WritableImage((int) this.grid.getCanvas().getWidth(), (int) this.grid.getCanvas().getHeight());
-        WritableImage snapshot = this.grid.getCanvas().snapshot(new SnapshotParameters(), wi);
-        FileChooser fileChooser = new FileChooser();
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Image files (*.png)", "*.png");
-        fileChooser.getExtensionFilters().add(extFilter);
-        File output = fileChooser.showSaveDialog((Stage) this.splitPane.getScene().getWindow());
-        try {
-            ImageIO.write(SwingFXUtils.fromFXImage(snapshot, null), "png", output);
-        } catch (IOException E) {
-        }
-    }
-
-    public void ResetAlgorithms() {
-        this.GenAlgo = null;
-    }
-
-    public void Vitesse(long period) {
-        if (this.GenAlgo != null && !this.GenAlgo.isFinished() && !this.hasSteped) {
-            this.myRepeatingTimer.cancel();
-            this.myRepeatingTimer = new Timer();
-            this.myRepeatingTimer.scheduleAtFixedRate(new TimerTask() {
-                @Override
-                public void run() {
-                    Platform.runLater(() -> {
-                        GenAlgo.update();
-                        if (GenAlgo.isFinished()) {
-                            myRepeatingTimer.cancel();
-                        }
-                    });
-                }
-            }, 0, period);
-        }
-    }
-
-    public void Save() {
-        if (this.grid.isAffected()) {
-            String defaultName;
-            if (!this.MazeList.isEmpty()) {
-                defaultName = "" + (this.MazeList.get(this.MazeList.size() - 1).getID() + 1);
-            } else {
-                defaultName = "Labyrinth 1";
-            }
-            TextInputDialog inputdialog = new TextInputDialog(defaultName);
-            inputdialog.setContentText("Nom: ");
-            inputdialog.setHeaderText("Entrer le nom de labyrinth");
-            Optional<String> result = inputdialog.showAndWait();
-            if (result.isPresent()) {
-                final String name;
-                if (inputdialog.getEditor().getText().isEmpty()) {
-                    name = defaultName;
-                } else {
-                    name = inputdialog.getEditor().getText();
-                }
-                Gson gson = new Gson();
-                new Thread(() -> {
-                    Platform.runLater(() -> {
-                        String json = gson.toJson(grid.getCells());
-                        MazeDAO.SaveMaze(name, rows, columns, json);
-                        LoadMazes();
-                    });
-                }).start();
-
-            }
-
-        } else {
-            Alert ms1 = new Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
-            ms1.setTitle("Message");
-            ms1.setHeaderText("Impossible d'enregistrer labyrinth");
-            ms1.setContentText("Aucune labyrinth a été créer");
-            ms1.show();
-        }
-
     }
 
     public void MazeLoading() {
@@ -309,6 +165,172 @@ public class MazeController implements Initializable {
             this.grid.Redraw();
         }
     }
+
+    //Generation section
+    public void MazeGeneration() {
+        if (!this.grid.isAffected() || this.hasSteped) {
+            this.hasSteped = false;
+            if (this.genAlgo == null) {
+                this.algo = this.selectedgenAlgo.getSelectionModel().getSelectedItem().toString();
+                this.grid.setAffected(true);
+                switch (algo) {
+                    case "Recursive Backtracker":
+                        this.genAlgo = new RecursiveBacktracker(this.grid.getCells(), rows, columns);
+                        break;
+                    case "Kruskal’s":
+                        this.genAlgo = new Kruskals(this.grid.getCells(), this.rows, this.columns);
+                        break;
+                    case "Simplified Prim’s":
+                        this.genAlgo = new SimplifiedPrims(this.grid.getCells(), this.rows, this.columns);
+                        break;
+                    case "True Prim’s":
+                        this.genAlgo = new TruePrims(this.grid.getCells(), this.rows, this.columns);
+                        break;
+                    case "Aldous-Broder":
+                        this.genAlgo = new AldousBroder(this.grid.getCells(), this.rows, this.columns);
+                        break;
+                    case "Wilson’s":
+                        this.genAlgo = new Wilsons(this.grid.getCells(), this.rows, this.columns);
+                        break;
+                }
+            }
+            this.generate();
+        }
+    }
+
+    public void Step() {
+        if (this.genAlgo == null) {
+            this.algo = this.selectedgenAlgo.getSelectionModel().getSelectedItem().toString();
+            switch (this.algo) {
+                case "Recursive Backtracker":
+                    this.genAlgo = new RecursiveBacktracker(this.grid.getCells(), rows, columns);
+                    break;
+                case "Kruskal’s":
+                    this.genAlgo = new Kruskals(this.grid.getCells(), this.rows, this.columns);
+                    break;
+                case "Simplified Prim’s":
+                    this.genAlgo = new SimplifiedPrims(this.grid.getCells(), this.rows, this.columns);
+                    break;
+                case "True Prim’s":
+                    this.genAlgo = new TruePrims(this.grid.getCells(), this.rows, this.columns);
+                    break;
+                case "Aldous-Broder":
+                    this.genAlgo = new TruePrims(this.grid.getCells(), this.rows, this.columns);
+                    break;
+                case "Wilson’s":
+                    this.genAlgo = new Wilsons(this.grid.getCells(), this.rows, this.columns);
+                    break;
+            }
+        }
+        if (!this.genAlgo.isFinished()) {
+            this.resetTimer();
+            this.grid.setAffected(true);
+            this.genAlgo.update();
+            this.hasSteped = true;
+        }
+    }
+
+    public void Vitesse(long period) {
+        if (this.genAlgo != null && !this.genAlgo.isFinished() && !this.hasSteped) {
+            this.timer.cancel();
+            this.timer = new Timer();
+            this.timer.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    Platform.runLater(() -> {
+                        if (genAlgo != null) {
+                            if (genAlgo != null && genAlgo.isFinished()) {
+                                if (timer != null) {
+                                    timer.cancel();
+                                }
+                            } else {
+                                genAlgo.update();
+                            }
+                        }
+                    });
+                }
+            }, 0, period);
+        }
+    }
+
+    public void generate() {
+
+        if (!this.genAlgo.isFinished()) {
+            this.timer = new Timer();
+            timer.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    Platform.runLater(() -> {
+                        if (genAlgo != null) {
+                            if (genAlgo != null && genAlgo.isFinished()) {
+                                if (timer != null) {
+                                    timer.cancel();
+                                }
+                            } else {
+                                genAlgo.update();
+                            }
+                        }
+                    });
+                }
+            }, 0, period);
+        }
+    }
+
+    //Save and exportation section
+    public void ExportImage() {
+        WritableImage wi = new WritableImage((int) this.grid.getCanvas().getWidth(), (int) this.grid.getCanvas().getHeight());
+        WritableImage snapshot = this.grid.getCanvas().snapshot(new SnapshotParameters(), wi);
+        FileChooser fileChooser = new FileChooser();
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Image files (*.png)", "*.png");
+        fileChooser.getExtensionFilters().add(extFilter);
+        File output = fileChooser.showSaveDialog((Stage) this.splitPane.getScene().getWindow());
+        try {
+            if(output!=null)
+            ImageIO.write(SwingFXUtils.fromFXImage(snapshot, null), "png", output);
+        } catch (IOException E) {
+        }
+    }
+
+    public void Save() {
+        if (this.grid.isAffected() && this.genAlgo != null && this.genAlgo.isFinished()) {
+            String defaultName;
+            if (!this.MazeList.isEmpty()) {
+                defaultName = "Labyrinth " + (this.MazeList.get(this.MazeList.size() - 1).getID() + 1);
+            } else {
+                defaultName = "Labyrinth 1";
+            }
+            TextInputDialog inputdialog = new TextInputDialog(defaultName);
+            inputdialog.setContentText("Nom: ");
+            inputdialog.setHeaderText("Entrer le nom de labyrinth");
+            Optional<String> result = inputdialog.showAndWait();
+            if (result.isPresent()) {
+                final String name;
+                if (inputdialog.getEditor().getText().isEmpty()) {
+                    name = defaultName;
+                } else {
+                    name = inputdialog.getEditor().getText();
+                }
+                Gson gson = new Gson();
+                new Thread(() -> {
+                    Platform.runLater(() -> {
+                        String json = gson.toJson(grid.getCells());
+                        MazeDAO.SaveMaze(name, this.algo, rows, columns, json);
+                        LoadMazes();
+                    });
+                }).start();
+
+            }
+
+        } else {
+            Alert ms1 = new Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
+            ms1.setTitle("Message");
+            ms1.setHeaderText("Impossible d'enregistrer labyrinth");
+            ms1.setContentText("Aucune labyrinth a été créer");
+            ms1.show();
+        }
+
+    }
+    //Maze table 
 
     public void MazeSettings() throws IOException {
         Stage popupwindow = new Stage();
@@ -342,27 +364,10 @@ public class MazeController implements Initializable {
         Bp.setBottom(hb);
         hb.setAlignment(Pos.CENTER);
         hb.setPrefHeight(46);
-        Scene scene1 = new Scene(Bp, 610, 400);
+        Scene scene1 = new Scene(Bp, 720, 400);
         popupwindow.setResizable(false);
         popupwindow.setScene(scene1);
         popupwindow.showAndWait();
-    }
-
-    public void LoadMazes() {
-        this.MazeList = MazeDAO.GetMazes();
-        String[] mazes = new String[this.MazeList.size()];
-        for (int i = 0; i < this.MazeList.size(); i++) {
-            mazes[i] = this.MazeList.get(i).getID() + "-" + this.MazeList.get(i).getName();
-        }
-        this.savebox.setItems(FXCollections.observableArrayList(mazes));
-        this.savebox.getSelectionModel().selectFirst();
-    }
-
-    public void resetTimer() {
-        if (this.myRepeatingTimer != null) {
-            this.myRepeatingTimer.cancel();
-            this.myRepeatingTimer = null;
-        }
     }
 
     public TableView MazeTable() {
@@ -374,9 +379,14 @@ public class MazeController implements Initializable {
         Id.setStyle("-fx-alignment: CENTER;");
         TableColumn<MazeModel, String> name = new TableColumn<>("Nom");
         name.setCellValueFactory(new PropertyValueFactory<>("name"));
-        name.setPrefWidth(157.60);
+        name.setPrefWidth(147.60);
         name.setResizable(false);
         name.setStyle("-fx-alignment: CENTER;");
+        TableColumn<MazeModel, String> algo = new TableColumn<>("Algorithm");
+        algo.setCellValueFactory(new PropertyValueFactory<>("Algo"));
+        algo.setPrefWidth(140);
+        algo.setResizable(false);
+        algo.setStyle("-fx-alignment: CENTER;");
         TableColumn<MazeModel, Integer> rowscol = new TableColumn<>("Nb lignes");
         rowscol.setCellValueFactory(new PropertyValueFactory<>("rows"));
         rowscol.setPrefWidth(102.40);
@@ -389,11 +399,12 @@ public class MazeController implements Initializable {
         columnscol.setStyle("-fx-alignment: CENTER;");
         TableColumn<MazeModel, Integer> Date = new TableColumn<>("Date d'enregistrement");
         Date.setCellValueFactory(new PropertyValueFactory<>("Date"));
-        Date.setPrefWidth(192);
+        Date.setPrefWidth(172);
         Date.setResizable(false);
         Date.setStyle("-fx-alignment: CENTER;");
         tableView.getColumns().add(Id);
         tableView.getColumns().add(name);
+        tableView.getColumns().add(algo);
         tableView.getColumns().add(rowscol);
         tableView.getColumns().add(columnscol);
         tableView.getColumns().add(Date);
@@ -401,39 +412,25 @@ public class MazeController implements Initializable {
         return tableView;
     }
 
-    public void generate() {
-        if (!this.grid.isAffected() || this.hasSteped) {
-            this.hasSteped = false;
-            if (!this.grid.isAffected()) {
-                this.grid.setAffected(true);
-            }
-            if (!this.GenAlgo.isFinished()) {
-                this.myRepeatingTimer = new Timer();
-                myRepeatingTimer.scheduleAtFixedRate(new TimerTask() {
-                    @Override
-                    public void run() {
-                        Platform.runLater(() -> {
-                            if (GenAlgo.isFinished()) {
-                                myRepeatingTimer.cancel();
-                            } else {
-                                GenAlgo.update();
-                            }
-                        });
-                    }
-                }, 0, period);
-            }
+    public void LoadMazes() {
+        this.MazeList = MazeDAO.GetMazes();
+        String[] mazes = new String[this.MazeList.size()];
+        for (int i = 0; i < this.MazeList.size(); i++) {
+            mazes[i] = this.MazeList.get(i).getID() + "-" + this.MazeList.get(i).getName();
+        }
+        this.savebox.setItems(FXCollections.observableArrayList(mazes));
+        this.savebox.getSelectionModel().selectFirst();
+    }
+    //Reset section
+    public void ResetAlgorithms() {
+        this.genAlgo = null;
+    }
+
+    public void resetTimer() {
+        if (this.timer != null) {
+            this.timer.cancel();
+            this.timer = null;
         }
     }
 
-    public void resetGrid(int rows, int columns) {
-        if (this.rows != rows && this.columns != columns || this.grid.isAffected()) {
-            this.grid.setAffected(false);
-            this.rows = rows;
-            this.columns = columns;
-            this.grid.setRows(rows);
-            this.grid.setColumns(columns);
-            this.grid.Repaint();
-            this.ResetAlgorithms();
-        }
-    }
 }
