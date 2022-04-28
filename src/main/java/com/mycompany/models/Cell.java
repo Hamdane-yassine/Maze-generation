@@ -1,15 +1,18 @@
 package com.mycompany.models;
 
+import java.util.ArrayList;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 public class Cell {
 
     public static Color VISITED_COLOR = Color.WHITE;
-    public static Color UNVISITED_COLOR =Color.FLORALWHITE;
+    public static Color UNVISITED_COLOR = Color.FLORALWHITE;
     public static Color SELECTED_COLOR = Color.BISQUE;
     public static Color POPED_UP = Color.WHITE;
     public static Color WALL_COLOR = Color.BLACK;
+    public static Color PATH_COLOR = Color.WHITE;
+    public static Color ROOT_TARGET_COLOR = Color.LIGHTCYAN;
 
     public static final byte TOP_WALL = 0;
     public static final byte BOTTOM_WALL = 1;
@@ -17,12 +20,13 @@ public class Cell {
     public static final byte RIGHT_WALL = 3;
 
     private int x, y, w, h, i, j, id;
-    private boolean selected, visited;
-    private boolean poped;
+    private boolean selected, visited, inpath, rootTarger;
     private Wall[] walls;
     private int cost;
-    private boolean linked=false;
-    public Cell(int x, int y, int w, int h, int i, int j, int id, boolean selected, boolean visited, boolean poped, Wall[] walls, int cost,boolean linked) {
+    private boolean linked = false;
+    private ArrayList<Cell> links;
+
+    public Cell(int x, int y, int w, int h, int i, int j, int id, boolean selected, boolean visited, boolean inpath, Wall[] walls, int cost, boolean linked, ArrayList<Cell> links) {
         super();
         this.x = x;
         this.y = y;
@@ -33,10 +37,41 @@ public class Cell {
         this.id = id;
         this.selected = selected;
         this.visited = visited;
-        this.poped = poped;
+        this.inpath = inpath;
         this.walls = walls;
         this.cost = cost;
-        this.linked=linked;
+        this.linked = linked;
+        this.links = links;
+    }
+
+    public Cell(int x, int y, int w, int h, int i, int j, int id) {
+        super();
+        this.x = x;
+        this.y = y;
+        this.w = w;
+        this.h = h;
+        this.i = i;
+        this.j = j;
+        this.id = id;
+        this.walls = new Wall[4];
+        this.walls[0] = new Wall(false);
+        this.walls[1] = new Wall(false);
+        this.walls[2] = new Wall(false);
+        this.walls[3] = new Wall(false);
+        this.links = new ArrayList<>();
+        this.rootTarger = false;
+    }
+
+    public void setRootTarger(boolean rootTarger) {
+        this.rootTarger = rootTarger;
+    }
+
+    public void setLinks(ArrayList<Cell> links) {
+        this.links = links;
+    }
+
+    public ArrayList<Cell> getLinks() {
+        return links;
     }
 
     public void setLinked(boolean linked) {
@@ -55,22 +90,6 @@ public class Cell {
         return cost;
     }
 
-    public Cell(int x, int y, int w, int h, int i, int j, int id) {
-        super();
-        this.x = x;
-        this.y = y;
-        this.w = w;
-        this.h = h;
-        this.i = i;
-        this.j = j;
-        this.id = id;
-        this.walls = new Wall[4];
-        this.walls[0] = new Wall(false);
-        this.walls[1] = new Wall(false);
-        this.walls[2] = new Wall(false);
-        this.walls[3] = new Wall(false);
-    }
-
     public void setId(int id) {
         this.id = id;
     }
@@ -79,17 +98,14 @@ public class Cell {
         return id;
     }
 
-    public void setPoped(boolean poped) {
-        this.poped = poped;
-    }
-
-    public boolean isPoped() {
-        return poped;
-    }
-
     public void draw(GraphicsContext gc) {
         // show cell
-        if (visited && !selected) {
+        if (rootTarger) {
+            gc.setFill(ROOT_TARGET_COLOR);
+        } else if (inpath) {
+            gc.setFill(PATH_COLOR);
+
+        } else if (visited && !selected) {
             gc.setFill(VISITED_COLOR);
         } else if (selected) {
             gc.setFill(SELECTED_COLOR);
@@ -154,8 +170,10 @@ public class Cell {
             this.breakWall(BOTTOM_WALL);
             to.breakWall(TOP_WALL);
         }
-        this.linked=true;
-        to.linked=true;
+        this.linked = true;
+        this.links.add(to);
+        to.linked = true;
+        to.links.add(this);
     }
 
     public void leave() {
@@ -241,6 +259,14 @@ public class Cell {
 
     public int getY() {
         return y;
+    }
+
+    public void setInpath(boolean inpath) {
+        this.inpath = inpath;
+    }
+
+    public boolean isInpath() {
+        return inpath;
     }
 
 }

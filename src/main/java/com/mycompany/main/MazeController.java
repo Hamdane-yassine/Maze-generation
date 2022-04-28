@@ -16,6 +16,10 @@ import com.mycompany.generation.GenerationAlgorithm;
 import com.mycompany.generation.SimplifiedPrims;
 import com.mycompany.generation.TruePrims;
 import com.mycompany.generation.Wilsons;
+import com.mycompany.solving.BreadthFirstSearch;
+import com.mycompany.solving.DepthFirstSearch;
+import com.mycompany.solving.Dijkstra;
+import com.mycompany.solving.SolvingAlgorithm;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -63,12 +67,17 @@ public class MazeController implements Initializable {
     private int columns = 10;
     private MazeGrid grid;
     private GenerationAlgorithm genAlgo;
+    private SolvingAlgorithm solAlgo;
     private Timer timer;
-    private int period = 500;
-    private boolean hasSteped = false;
+    private int genperiod = 500;
+    private int solperiod = 500;
+    private boolean hasStepedGen = false;
+    private boolean hasStepedSol = false;
+    private boolean startSolving = false;
     private int MazeId = -1;
     private ObservableList<MazeModel> MazeList;
-    private String algo;
+    private String genalgoselected;
+    private String solalgoselected;
     @FXML
     VBox leftPane;
     @FXML
@@ -82,27 +91,30 @@ public class MazeController implements Initializable {
     @FXML
     ComboBox selectedgenAlgo;
     @FXML
+    ComboBox solselect;
+    @FXML
     ComboBox savebox;
     @FXML
     Slider genslider;
+    @FXML
+    Slider solslider;
 
     @Override
     public void initialize(URL url, ResourceBundle reb) {
 
         this.genslider.valueProperty().addListener((ObservableValue<? extends Number> arg0, Number arg1, Number arg2) -> {
-            int value = (int) MazeController.this.genslider.getValue();
-            int actualvalue = 1;
-            if (value < 100) {
-                actualvalue = 100 - value;
-            }
-            MazeController.this.period = actualvalue * 10;
-            MazeController.this.Vitesse((long) MazeController.this.period);
+            MazeController.this.GenVitesse();
+        });
+        this.solslider.valueProperty().addListener((ObservableValue<? extends Number> arg0, Number arg1, Number arg2) -> {
+            MazeController.this.SolVitesse();
         });
         this.LoadMazes();
         this.gridsize.setItems(FXCollections.observableArrayList(new String[]{"10x10", "15x15", "25x25", "50x50", "100x100"}));
         this.gridsize.getSelectionModel().selectFirst();
         this.selectedgenAlgo.setItems(FXCollections.observableArrayList(new String[]{"Recursive Backtracker", "Kruskal’s", "Simplified Prim’s", "True Prim’s", "Aldous-Broder", "Wilson’s"}));
         this.selectedgenAlgo.getSelectionModel().selectFirst();
+        this.solselect.setItems(FXCollections.observableArrayList(new String[]{"Dijkstra’s", "Depth First Search", "Breadth First Search"}));
+        this.solselect.getSelectionModel().selectFirst();
         this.grid = new MazeGrid(rows, columns);
         this.grid.setPadding(new Insets(10, 10, 10, 10));
         this.scrollmaze.setContent(grid);
@@ -168,12 +180,12 @@ public class MazeController implements Initializable {
 
     //Generation section
     public void MazeGeneration() {
-        if (!this.grid.isAffected() || this.hasSteped) {
-            this.hasSteped = false;
+        if (!this.grid.isAffected() || this.hasStepedGen) {
+            this.hasStepedGen = false;
             if (this.genAlgo == null) {
-                this.algo = this.selectedgenAlgo.getSelectionModel().getSelectedItem().toString();
+                this.genalgoselected = this.selectedgenAlgo.getSelectionModel().getSelectedItem().toString();
                 this.grid.setAffected(true);
-                switch (algo) {
+                switch (genalgoselected) {
                     case "Recursive Backtracker":
                         this.genAlgo = new RecursiveBacktracker(this.grid.getCells(), rows, columns);
                         break;
@@ -198,10 +210,10 @@ public class MazeController implements Initializable {
         }
     }
 
-    public void Step() {
+    public void GenStep() {
         if (this.genAlgo == null) {
-            this.algo = this.selectedgenAlgo.getSelectionModel().getSelectedItem().toString();
-            switch (this.algo) {
+            this.genalgoselected = this.selectedgenAlgo.getSelectionModel().getSelectedItem().toString();
+            switch (this.genalgoselected) {
                 case "Recursive Backtracker":
                     this.genAlgo = new RecursiveBacktracker(this.grid.getCells(), rows, columns);
                     break;
@@ -226,12 +238,18 @@ public class MazeController implements Initializable {
             this.resetTimer();
             this.grid.setAffected(true);
             this.genAlgo.update();
-            this.hasSteped = true;
+            this.hasStepedGen = true;
         }
     }
 
-    public void Vitesse(long period) {
-        if (this.genAlgo != null && !this.genAlgo.isFinished() && !this.hasSteped) {
+    public void GenVitesse() {
+        int value = (int) this.genslider.getValue();
+        int actualvalue = 1;
+        if (value < 100) {
+            actualvalue = 100 - value;
+        }
+        this.genperiod = actualvalue * 2;
+        if (this.genAlgo != null && !this.genAlgo.isFinished() && !this.hasStepedGen) {
             this.timer.cancel();
             this.timer = new Timer();
             this.timer.scheduleAtFixedRate(new TimerTask() {
@@ -249,7 +267,7 @@ public class MazeController implements Initializable {
                         }
                     });
                 }
-            }, 0, period);
+            }, 0, genperiod);
         }
     }
 
@@ -272,7 +290,125 @@ public class MazeController implements Initializable {
                         }
                     });
                 }
-            }, 0, period);
+            }, 0, genperiod);
+        }
+    }
+
+    //solve section
+    public void MazeSolving() {
+        if (this.genAlgo != null && this.genAlgo.isFinished()) {
+            this.SolAlgoChanged();
+            if (!this.startSolving || this.hasStepedSol ) {
+                this.hasStepedSol = false;
+                if (this.solAlgo == null) {
+                    this.startSolving = true;
+                    this.solalgoselected = this.solselect.getSelectionModel().getSelectedItem().toString();
+                    switch (solalgoselected) {
+                        case "Dijkstra’s":
+                            this.solAlgo = new Dijkstra(this.grid.getCells()[0][0], this.grid.getCells()[this.rows - 1][this.columns - 1]);
+                            break;
+                        case "Depth First Search":
+                            this.solAlgo = new DepthFirstSearch(this.grid.getCells()[0][0], this.grid.getCells()[this.rows - 1][this.columns - 1]);
+                            break;
+                        case "Breadth First Search":
+                            this.solAlgo = new BreadthFirstSearch(this.grid.getCells()[0][0], this.grid.getCells()[this.rows - 1][this.columns - 1]);
+                            break;
+                    }
+                }
+                this.resolve();
+            }
+        }
+
+    }
+
+    public void resolve() {
+        if (!this.solAlgo.isFinished()) {
+            this.timer = new Timer();
+            timer.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    Platform.runLater(() -> {
+                        if (solAlgo != null) {
+                            if (solAlgo != null && solAlgo.isFinished()) {
+                                if (timer != null) {
+                                    timer.cancel();
+                                }
+                            } else {
+                                solAlgo.update();
+                            }
+                        }
+                    });
+                }
+            }, 0, solperiod);
+        }
+    }
+
+    public boolean SolAlgoChanged() {
+        if (this.solalgoselected == null) {
+            return false;
+        }
+        String sel = this.solselect.getSelectionModel().getSelectedItem().toString();
+        if (sel.equals(solalgoselected)) {
+            return false;
+        }
+
+        this.resetMazeSol();
+        return true;
+    }
+
+    public void SolStep() {
+        if (this.genAlgo != null && this.genAlgo.isFinished()) {
+            this.SolAlgoChanged();
+            if (this.solAlgo == null) {
+                this.startSolving = true;
+                this.solalgoselected = this.solselect.getSelectionModel().getSelectedItem().toString();
+                switch (solalgoselected) {
+                    case "Dijkstra’s":
+                        this.solAlgo = new Dijkstra(this.grid.getCells()[0][0], this.grid.getCells()[this.rows - 1][this.columns - 1]);
+                        break;
+                    case "Depth First Search":
+                        this.solAlgo = new DepthFirstSearch(this.grid.getCells()[0][0], this.grid.getCells()[this.rows - 1][this.columns - 1]);
+                        break;
+                    case "Breadth First Search":
+                        this.solAlgo = new BreadthFirstSearch(this.grid.getCells()[0][0], this.grid.getCells()[this.rows - 1][this.columns - 1]);
+                        break;
+                }
+            }
+            if (!this.solAlgo.isFinished()) {
+                this.resetTimer();
+                this.solAlgo.update();
+                this.hasStepedSol = true;
+            }
+        }
+
+    }
+
+    public void SolVitesse() {
+        int value = (int) this.solslider.getValue();
+        int actualvalue = 1;
+        if (value < 100) {
+            actualvalue = 100 - value;
+        }
+        this.solperiod = actualvalue * 2;
+        if (this.solAlgo != null && !this.solAlgo.isFinished() && !this.hasStepedSol) {
+            this.timer.cancel();
+            this.timer = new Timer();
+            this.timer.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    Platform.runLater(() -> {
+                        if (solAlgo != null) {
+                            if (solAlgo != null && solAlgo.isFinished()) {
+                                if (timer != null) {
+                                    timer.cancel();
+                                }
+                            } else {
+                                solAlgo.update();
+                            }
+                        }
+                    });
+                }
+            }, 0, genperiod);
         }
     }
 
@@ -285,8 +421,9 @@ public class MazeController implements Initializable {
         fileChooser.getExtensionFilters().add(extFilter);
         File output = fileChooser.showSaveDialog((Stage) this.splitPane.getScene().getWindow());
         try {
-            if(output!=null)
-            ImageIO.write(SwingFXUtils.fromFXImage(snapshot, null), "png", output);
+            if (output != null) {
+                ImageIO.write(SwingFXUtils.fromFXImage(snapshot, null), "png", output);
+            }
         } catch (IOException E) {
         }
     }
@@ -314,7 +451,7 @@ public class MazeController implements Initializable {
                 new Thread(() -> {
                     Platform.runLater(() -> {
                         String json = gson.toJson(grid.getCells());
-                        MazeDAO.SaveMaze(name, this.algo, rows, columns, json);
+                        MazeDAO.SaveMaze(name, this.genalgoselected, rows, columns, json);
                         LoadMazes();
                     });
                 }).start();
@@ -421,9 +558,14 @@ public class MazeController implements Initializable {
         this.savebox.setItems(FXCollections.observableArrayList(mazes));
         this.savebox.getSelectionModel().selectFirst();
     }
+
     //Reset section
     public void ResetAlgorithms() {
         this.genAlgo = null;
+        this.solAlgo = null;
+        this.startSolving = false;
+        this.hasStepedSol = false;
+        this.hasStepedGen = false;
     }
 
     public void resetTimer() {
@@ -433,4 +575,18 @@ public class MazeController implements Initializable {
         }
     }
 
+    public void resetMazeSol() {
+        if (this.solAlgo != null) {
+            for (int i = 0; i < this.rows; i++) {
+                for (int j = 0; j < this.columns; j++) {
+                    this.grid.getCells()[i][j].setSelected(false);
+                    this.grid.getCells()[i][j].setInpath(false);
+                }
+            }
+            resetTimer();
+            this.solAlgo = null;
+            this.startSolving=false;
+        }
+
+    }
 }

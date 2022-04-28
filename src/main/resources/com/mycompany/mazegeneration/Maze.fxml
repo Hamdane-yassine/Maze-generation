@@ -101,7 +101,7 @@
                         </HBox>
                         <HBox alignment="CENTER" prefHeight="24.0" prefWidth="79.0" spacing="2.0">
                            <children>
-                              <Button mnemonicParsing="false" onAction="#Step" text="Pas à pas" />
+                              <Button mnemonicParsing="false" onAction="#GenStep" text="Pas à pas" />
                               <Button mnemonicParsing="false" onAction="#MazeGeneration" text="Exécuter " />
                            </children>
                            <padding>
@@ -114,7 +114,7 @@
                      <children>
                         <HBox alignment="CENTER" prefHeight="0.0" prefWidth="79.0" spacing="2.0" VBox.vgrow="NEVER">
                            <children>
-                              <Label text="RÉSOUDRE">
+                              <Label text="RESOUDRE">
                                  <font>
                                     <Font name="Courier New Bold" size="14.0" />
                                  </font>
@@ -131,10 +131,10 @@
                                     <Font name="Courier New" size="14.0" />
                                  </font>
                               </Label>
-                              <ComboBox prefWidth="150.0" />
+                              <ComboBox fx:id="solselect" prefWidth="150.0" />
                            </children>
                            <padding>
-                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                              <Insets left="5.0" right="5.0" top="5.0" />
                            </padding>
                         </HBox>
                         <HBox alignment="CENTER" prefHeight="0.0" prefWidth="79.0" spacing="2.0">
@@ -144,7 +144,11 @@
                                     <Font name="Courier New" size="14.0" />
                                  </font>
                               </Label>
-                              <Slider />
+                              <Slider fx:id="solslider" blockIncrement="25.0" minorTickCount="0" showTickMarks="true" value="50.0">
+                                 <padding>
+                                    <Insets top="10.0" />
+                                 </padding>
+                              </Slider>
                            </children>
                            <padding>
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -152,8 +156,9 @@
                         </HBox>
                         <HBox alignment="CENTER" prefHeight="24.0" prefWidth="79.0" spacing="2.0">
                            <children>
-                              <Button mnemonicParsing="false" text="Pas à pas" />
-                              <Button mnemonicParsing="false" text="Exécuter " />
+                              <Button mnemonicParsing="false" onAction="#resetMazeSol" text="réinitialiser" />
+                              <Button mnemonicParsing="false" onAction="#SolStep" text="Pas à pas" />
+                              <Button mnemonicParsing="false" onAction="#MazeSolving" text="Exécuter " />
                            </children>
                            <padding>
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -210,7 +215,7 @@
                   </VBox>
                   <VBox prefHeight="75.0" prefWidth="114.0" spacing="2.0" style="-fx-padding: 10; -fx-border-style: solid inside; -fx-border-width: 2px; -fx-border-insets: 2; -fx-border-radius: 4; -fx-border-color: lightgray;">
                      <children>
-                        <HBox alignment="CENTER" prefHeight="0.0" prefWidth="79.0" spacing="2.0" VBox.vgrow="NEVER">
+                        <HBox alignment="CENTER" prefHeight="21.0" prefWidth="314.0" spacing="2.0" VBox.vgrow="NEVER">
                            <children>
                               <Label text="PFE SMI - 2021-2022" textFill="#868484">
                                  <font>
@@ -219,7 +224,7 @@
                               </Label>
                            </children>
                            <padding>
-                              <Insets bottom="5.0" left="5.0" right="5.0" top="15.0" />
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="8.0" />
                            </padding>
                         </HBox>
                      </children>

@@ -45,6 +45,7 @@ public final class MazeGrid extends BorderPane {
         new Thread(() -> {
             Platform.runLater(timer::start);
         }).start();
+        
     }
 
     public int CalcWidth(int columns) {

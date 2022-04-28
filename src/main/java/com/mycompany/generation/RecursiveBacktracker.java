@@ -38,7 +38,6 @@ public class RecursiveBacktracker extends GenerationAlgorithm {
             } else {
                 selectedCell.leave();
                 selectedCell = cellStack.pop();
-                selectedCell.setPoped(true);
                 selectedCell.visit();
             }
         }
