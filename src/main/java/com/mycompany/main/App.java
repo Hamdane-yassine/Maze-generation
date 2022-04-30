@@ -19,19 +19,13 @@ public class App extends Application {
         Parent root = FXMLLoader.load(getClass().getResource("../mazegeneration/Maze.fxml"));
         Scene scene = new Scene(root, Screen.getPrimary().getBounds().getWidth() * 0.80, Screen.getPrimary().getBounds().getHeight() * 0.80);
         stage.setTitle("Generation Des labyrinth");
-        stage.setResizable(true);
+        stage.setResizable(false);
         stage.setScene(scene);
         stage.show();
+
     }
 
     public static void main(String[] args) {
         launch();
     }
-
-    @Override
-    public void stop() throws Exception {
-        super.stop();
-        System.exit(0);
-    }
-
 }

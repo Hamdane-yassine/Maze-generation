@@ -14,9 +14,9 @@ import java.util.Stack;
  */
 public class DepthFirstSearch extends SolvingAlgorithm {
 
-    private Stack<Cell> path;
+    private final Stack<Cell> path;
     private Cell current;
-    private ArrayList<Cell> visited;
+    private final ArrayList<Cell> visited;
     private ArrayList<Cell> possibleMoves;
 
     public DepthFirstSearch(Cell root, Cell target, Cell[][] grid) {
@@ -26,6 +26,7 @@ public class DepthFirstSearch extends SolvingAlgorithm {
         this.path.push(this.current);
         this.getRoot().visit();
         this.visited = new ArrayList<>();
+        this.visited.add(this.current);
     }
 
     @Override
@@ -42,6 +43,8 @@ public class DepthFirstSearch extends SolvingAlgorithm {
             this.current = this.path.peek();
         }
         if (this.getTarget() == this.current) {
+            for(Cell cell : path)
+                cell.setInpath(true);
             this.setFinished(true);
         }
     }

@@ -48,11 +48,12 @@ public class BreadthFirstSearch extends SolvingAlgorithm {
             }
             this.current = queue.remove();
         } else {
-            this.assist = visited.get(this.assist);
             this.assist.setInpath(true);
+            this.assist = visited.get(this.assist);
             this.path.addFirst(this.assist);
             if (this.assist == this.getRoot()) {
-                this.setFinished(true);
+                this.assist.setInpath(true);
+                this.setFinished(true);              
             }
         }
 

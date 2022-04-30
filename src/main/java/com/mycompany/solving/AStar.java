@@ -178,11 +178,11 @@ public class AStar extends SolvingAlgorithm {
             this.parent = parent;
         }
 
-        public int getX() {
+        public double getX() {
             return this.cell.getX();
         }
 
-        public int getY() {
+        public double getY() {
             return this.cell.getY();
         }
 

@@ -26,8 +26,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.Timer;
-import java.util.TimerTask;
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -56,6 +57,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import javax.imageio.ImageIO;
 
 /**
@@ -69,9 +71,8 @@ public class MazeController implements Initializable {
     private MazeGrid grid;
     private GenerationAlgorithm genAlgo;
     private SolvingAlgorithm solAlgo;
-    private Timer timer;
-    private int genperiod = 500;
-    private int solperiod = 500;
+    private double genperiod = 150;
+    private double solperiod = 150;
     private boolean hasStepedGen = false;
     private boolean hasStepedSol = false;
     private boolean startSolving = false;
@@ -80,6 +81,11 @@ public class MazeController implements Initializable {
     private ObservableList<MazeModel> MazeList;
     private String genalgoselected;
     private String solalgoselected;
+    private String lastFileChooserPath;
+    private Timeline timeline;
+    private KeyFrame generationKey;
+    private KeyFrame solvingKey;
+    private Stage stage;
     @FXML
     VBox leftPane;
     @FXML
@@ -104,6 +110,10 @@ public class MazeController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle reb) {
 
+        this.scrollpane.maxWidthProperty().bind(splitPane.widthProperty().multiply(0.25));
+        this.scrollpane.minWidthProperty().bind(splitPane.widthProperty().multiply(0.25));
+        this.scrollmaze.maxWidthProperty().bind(splitPane.widthProperty().multiply(0.75));
+        this.scrollmaze.minWidthProperty().bind(splitPane.widthProperty().multiply(0.75));
         this.genslider.valueProperty().addListener((ObservableValue<? extends Number> arg0, Number arg1, Number arg2) -> {
             MazeController.this.GenVitesse();
         });
@@ -118,12 +128,24 @@ public class MazeController implements Initializable {
         this.solselect.setItems(FXCollections.observableArrayList(new String[]{"Dijkstra’s", "Depth First Search", "Breadth First Search", "A*"}));
         this.solselect.getSelectionModel().selectFirst();
         this.grid = new MazeGrid(rows, columns);
-        this.grid.setPadding(new Insets(10, 10, 10, 10));
         this.scrollmaze.setContent(grid);
         this.leftPane.setPadding(new Insets(2, 2, 2, 2));
         this.leftPane.setSpacing(10);
-        this.scrollpane.maxWidthProperty().bind(splitPane.widthProperty().multiply(0.225));
-        this.scrollpane.minWidthProperty().bind(splitPane.widthProperty().multiply(0.225));
+        this.timeline = new Timeline();
+        this.generationKey = new KeyFrame(Duration.millis(this.genperiod), event -> {
+            if (!this.genAlgo.isFinished()) {
+                this.genAlgo.update();
+            } else {
+                this.timeline.stop();
+            }
+        });
+        this.solvingKey = new KeyFrame(Duration.millis(this.solperiod), event -> {
+            if (!this.solAlgo.isFinished()) {
+                this.solAlgo.update();
+            } else {
+                this.timeline.stop();
+            }
+        });
     }
 
     //Grid management
@@ -178,6 +200,7 @@ public class MazeController implements Initializable {
             this.grid.setCells(cells);
             this.grid.Redraw();
             this.mazecharged = true;
+            this.genalgoselected = maze.getAlgo();
             this.solalgoselected = maze.getSolAlgo();
         }
     }
@@ -239,7 +262,9 @@ public class MazeController implements Initializable {
             }
         }
         if (!this.genAlgo.isFinished()) {
-            this.resetTimer();
+            if (this.timeline.getStatus() == Animation.Status.RUNNING) {
+                this.timeline.stop();
+            }
             this.grid.setAffected(true);
             this.genAlgo.update();
             this.hasStepedGen = true;
@@ -247,54 +272,39 @@ public class MazeController implements Initializable {
     }
 
     public void GenVitesse() {
-        int value = (int) this.genslider.getValue();
-        int actualvalue = 1;
+        double value = this.genslider.getValue();
+        double actualvalue = 1;
         if (value < 100) {
-            actualvalue = 100 - value;
+            actualvalue = 100.0 - value;
         }
-        this.genperiod = actualvalue * 2;
+        this.genperiod = actualvalue * 3;
         if (this.genAlgo != null && !this.genAlgo.isFinished() && !this.hasStepedGen) {
-            this.timer.cancel();
-            this.timer = new Timer();
-            this.timer.scheduleAtFixedRate(new TimerTask() {
-                @Override
-                public void run() {
-                    Platform.runLater(() -> {
-                        if (genAlgo != null) {
-                            if (genAlgo != null && genAlgo.isFinished()) {
-                                if (timer != null) {
-                                    timer.cancel();
-                                }
-                            } else {
-                                genAlgo.update();
-                            }
-                        }
-                    });
+            this.generationKey = new KeyFrame(Duration.millis(this.genperiod), event -> {
+                if (!this.genAlgo.isFinished()) {
+                    this.genAlgo.update();
+                } else {
+                    this.timeline.stop();
                 }
-            }, 0, genperiod);
+            });
+            timeline.stop();
+            timeline.getKeyFrames().setAll(this.generationKey);
+            timeline.play();
         }
     }
 
     public void generate() {
 
         if (!this.genAlgo.isFinished()) {
-            this.timer = new Timer();
-            timer.scheduleAtFixedRate(new TimerTask() {
-                @Override
-                public void run() {
-                    Platform.runLater(() -> {
-                        if (genAlgo != null) {
-                            if (genAlgo != null && genAlgo.isFinished()) {
-                                if (timer != null) {
-                                    timer.cancel();
-                                }
-                            } else {
-                                genAlgo.update();
-                            }
-                        }
-                    });
+            this.generationKey = new KeyFrame(Duration.millis(this.genperiod), event -> {
+                if (!this.genAlgo.isFinished()) {
+                    this.genAlgo.update();
+                } else {
+                    this.timeline.stop();
                 }
-            }, 0, genperiod);
+            });
+            timeline.getKeyFrames().setAll(this.generationKey);
+            timeline.setCycleCount(Animation.INDEFINITE);
+            timeline.play();
         }
     }
 
@@ -331,23 +341,16 @@ public class MazeController implements Initializable {
 
     public void resolve() {
         if (!this.solAlgo.isFinished()) {
-            this.timer = new Timer();
-            timer.scheduleAtFixedRate(new TimerTask() {
-                @Override
-                public void run() {
-                    Platform.runLater(() -> {
-                        if (solAlgo != null) {
-                            if (solAlgo != null && solAlgo.isFinished()) {
-                                if (timer != null) {
-                                    timer.cancel();
-                                }
-                            } else {
-                                solAlgo.update();
-                            }
-                        }
-                    });
+            this.solvingKey = new KeyFrame(Duration.millis(this.solperiod), event -> {
+                if (!this.solAlgo.isFinished()) {
+                    this.solAlgo.update();
+                } else {
+                    this.timeline.stop();
                 }
-            }, 0, solperiod);
+            });
+            timeline.getKeyFrames().setAll(this.solvingKey);
+            timeline.setCycleCount(Animation.INDEFINITE);
+            timeline.play();
         }
     }
 
@@ -386,7 +389,9 @@ public class MazeController implements Initializable {
                 }
             }
             if (!this.solAlgo.isFinished()) {
-                this.resetTimer();
+                if (this.timeline.getStatus() == Animation.Status.RUNNING) {
+                    this.timeline.stop();
+                }
                 this.MazeId = -1;
                 this.solAlgo.update();
                 this.hasStepedSol = true;
@@ -396,31 +401,23 @@ public class MazeController implements Initializable {
     }
 
     public void SolVitesse() {
-        int value = (int) this.solslider.getValue();
-        int actualvalue = 1;
+        double value = this.solslider.getValue();
+        double actualvalue = 1;
         if (value < 100) {
-            actualvalue = 100 - value;
+            actualvalue = 100.0 - value;
         }
-        this.solperiod = actualvalue * 2;
+        this.solperiod = actualvalue * 3;
         if (this.solAlgo != null && !this.solAlgo.isFinished() && !this.hasStepedSol) {
-            this.timer.cancel();
-            this.timer = new Timer();
-            this.timer.scheduleAtFixedRate(new TimerTask() {
-                @Override
-                public void run() {
-                    Platform.runLater(() -> {
-                        if (solAlgo != null) {
-                            if (solAlgo != null && solAlgo.isFinished()) {
-                                if (timer != null) {
-                                    timer.cancel();
-                                }
-                            } else {
-                                solAlgo.update();
-                            }
-                        }
-                    });
+            this.solvingKey = new KeyFrame(Duration.millis(this.solperiod), event -> {
+                if (!this.solAlgo.isFinished()) {
+                    this.solAlgo.update();
+                } else {
+                    this.timeline.stop();
                 }
-            }, 0, solperiod);
+            });
+            timeline.stop();
+            timeline.getKeyFrames().setAll(this.solvingKey);
+            timeline.play();
         }
     }
 
@@ -429,11 +426,17 @@ public class MazeController implements Initializable {
         WritableImage wi = new WritableImage((int) this.grid.getCanvas().getWidth(), (int) this.grid.getCanvas().getHeight());
         WritableImage snapshot = this.grid.getCanvas().snapshot(new SnapshotParameters(), wi);
         FileChooser fileChooser = new FileChooser();
+        if (this.lastFileChooserPath == null) {
+            fileChooser.setInitialDirectory(new File(System.getProperty("user.home") + File.separator + "Pictures"));
+        } else {
+            fileChooser.setInitialDirectory(new File(this.lastFileChooserPath));
+        }
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Image files (*.png)", "*.png");
         fileChooser.getExtensionFilters().add(extFilter);
         File output = fileChooser.showSaveDialog((Stage) this.splitPane.getScene().getWindow());
         try {
             if (output != null) {
+                this.lastFileChooserPath = output.getParent();
                 ImageIO.write(SwingFXUtils.fromFXImage(snapshot, null), "png", output);
             }
         } catch (IOException E) {
@@ -441,7 +444,7 @@ public class MazeController implements Initializable {
     }
 
     public void Save() {
-        if (this.grid.isAffected() && this.genAlgo != null && this.genAlgo.isFinished()) {
+        if (this.grid.isAffected() && this.genAlgo != null && this.genAlgo.isFinished() || mazecharged) {
             String defaultName;
             if (!this.MazeList.isEmpty()) {
                 defaultName = "Labyrinth " + (this.MazeList.get(this.MazeList.size() - 1).getID() + 1);
@@ -591,9 +594,8 @@ public class MazeController implements Initializable {
     }
 
     public void resetTimer() {
-        if (this.timer != null) {
-            this.timer.cancel();
-            this.timer = null;
+        if (this.timeline.getStatus() == Animation.Status.RUNNING) {
+            this.timeline.stop();
         }
     }
 
@@ -609,6 +611,15 @@ public class MazeController implements Initializable {
             this.solAlgo = null;
             this.startSolving = false;
         }
-
     }
+
+    public void setStage(Stage stage) {
+        this.stage = stage;
+    }
+
+    public MazeGrid getGrid() {
+        return grid;
+    }
+    
+    
 }

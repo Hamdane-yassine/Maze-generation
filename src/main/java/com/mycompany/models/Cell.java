@@ -12,21 +12,22 @@ public class Cell {
     public static Color POPED_UP = Color.WHITE;
     public static Color WALL_COLOR = Color.BLACK;
     public static Color PATH_COLOR = Color.RED;
-    public static Color ROOT_TARGET_COLOR = Color.LIGHTCYAN;
+    public static Color ROOT_TARGET_COLOR = Color.DARKVIOLET;
 
     public static final byte TOP_WALL = 0;
     public static final byte BOTTOM_WALL = 1;
     public static final byte LEFT_WALL = 2;
     public static final byte RIGHT_WALL = 3;
 
-    private int x, y, w, h, i, j, id;
+    private double x, y, w, h;
+    private int i, j, id;
     private boolean selected, visited, inpath, rootTarger;
     private Wall[] walls;
     private int cost;
     private boolean linked = false;
     private ArrayList<ArrayList<Integer>> links;
 
-    public Cell(int x, int y, int w, int h, int i, int j, int id, boolean selected, boolean visited, boolean inpath, boolean rootTarget, Wall[] walls, int cost, boolean linked, ArrayList<ArrayList<Integer>> links) {
+    public Cell(double x, double y, double w, double h, int i, int j, int id, boolean selected, boolean visited, boolean inpath, boolean rootTarget, Wall[] walls, int cost, boolean linked, ArrayList<ArrayList<Integer>> links) {
         super();
         this.x = x;
         this.y = y;
@@ -45,7 +46,7 @@ public class Cell {
         this.links = links;
     }
 
-    public Cell(int x, int y, int w, int h, int i, int j, int id) {
+    public Cell(double x, double y, double w, double h, int i, int j, int id) {
         super();
         this.x = x;
         this.y = y;
@@ -105,11 +106,10 @@ public class Cell {
 
     public void draw(GraphicsContext gc) {
         // show cell
-        if (rootTarger) {
-            gc.setFill(ROOT_TARGET_COLOR);
-        } else if (inpath) {
+        if (inpath) {
             gc.setFill(PATH_COLOR);
-
+        } else if (rootTarger) {
+            gc.setFill(ROOT_TARGET_COLOR);
         } else if (visited && !selected) {
             gc.setFill(VISITED_COLOR);
         } else if (selected) {
@@ -120,7 +120,7 @@ public class Cell {
         gc.fillRect(x, y, w, h);
 
         // show walls
-        int x1 = 0, y1 = 0, x2 = 0, y2 = 0;
+        double x1 = 0.0, y1 = 0.0, x2 = 0.0, y2 = 0.0;
         gc.setStroke(WALL_COLOR);
         for (int k = 0; k < this.walls.length; k++) {
             if (!this.walls[k].isBroken()) {
@@ -200,19 +200,19 @@ public class Cell {
         this.selected = true;
     }
 
-    public void setX(int x) {
+    public void setX(double x) {
         this.x = x;
     }
 
-    public void setY(int y) {
+    public void setY(double y) {
         this.y = y;
     }
 
-    public void setW(int w) {
+    public void setW(double w) {
         this.w = w;
     }
 
-    public void setH(int h) {
+    public void setH(double h) {
         this.h = h;
     }
 
@@ -248,11 +248,11 @@ public class Cell {
         return this.visited;
     }
 
-    public int getW() {
+    public double getW() {
         return w;
     }
 
-    public int getH() {
+    public double getH() {
         return h;
     }
 
@@ -264,11 +264,11 @@ public class Cell {
         return selected;
     }
 
-    public int getX() {
+    public double getX() {
         return x;
     }
 
-    public int getY() {
+    public double getY() {
         return y;
     }
 
