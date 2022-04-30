@@ -23,9 +23,9 @@
                      <children>
                         <HBox alignment="CENTER" prefHeight="0.0" prefWidth="79.0" spacing="2.0" VBox.vgrow="NEVER">
                            <children>
-                              <Label text="INITIALISATION">
+                              <Label text="INITIALISATION" textFill="#281bdc">
                                  <font>
-                                    <Font name="Courier New Bold" size="14.0" />
+                                    <Font name="Comic Sans MS Bold" size="14.0" />
                                  </font>
                               </Label>
                            </children>
