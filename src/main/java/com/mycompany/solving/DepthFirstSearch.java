@@ -6,7 +6,6 @@ package com.mycompany.solving;
 
 import com.mycompany.models.Cell;
 import java.util.ArrayList;
-import java.util.EmptyStackException;
 import java.util.Stack;
 
 /**
@@ -20,14 +19,12 @@ public class DepthFirstSearch extends SolvingAlgorithm {
     private ArrayList<Cell> visited;
     private ArrayList<Cell> possibleMoves;
 
-    public DepthFirstSearch(Cell root, Cell target) {
-        super(root, target);
-        this.path = new Stack<Cell>();
+    public DepthFirstSearch(Cell root, Cell target, Cell[][] grid) {
+        super(root, target, grid);
+        this.path = new Stack<>();
         this.current = this.getRoot();
         this.path.push(this.current);
         this.getRoot().visit();
-        this.getRoot().setRootTarger(true);
-        this.getTarget().setRootTarger(true);
         this.visited = new ArrayList<>();
     }
 
@@ -35,7 +32,7 @@ public class DepthFirstSearch extends SolvingAlgorithm {
     public void update() {
         possibleMoves = availableMoves(current);
         if (!possibleMoves.isEmpty()) {
-            this.current = possibleMoves.get(possibleMoves.size()-1);
+            this.current = possibleMoves.get(possibleMoves.size() - 1);
             this.visited.add(this.current);
             this.current.setSelected(true);
             this.path.push(this.current);
@@ -44,17 +41,20 @@ public class DepthFirstSearch extends SolvingAlgorithm {
             this.path.pop().leave();
             this.current = this.path.peek();
         }
-        if(this.getTarget() == this.current)
+        if (this.getTarget() == this.current) {
             this.setFinished(true);
+        }
     }
 
     public ArrayList<Cell> availableMoves(Cell cell) {
         ArrayList<Cell> available_moves = new ArrayList<>();
-        for (Cell available_neighbor : cell.getLinks()) {
+        ArrayList<Cell> links = getLinks(cell);
+        for (Cell available_neighbor : links) {
             if (!this.visited.contains(available_neighbor)) {
                 available_moves.add(available_neighbor);
             }
         }
         return available_moves;
     }
+
 }

@@ -10,7 +10,7 @@ import com.mycompany.models.Cell;
  *
  * @author HAMDANE
  */
-public class GenerationAlgorithm {
+public abstract class  GenerationAlgorithm {
     private Cell[][] cells;
     private int rows;
     private int columns;
@@ -56,8 +56,6 @@ public class GenerationAlgorithm {
     
 
 
-    public void update() {
-        //update
-    }
+    public abstract void update();
 
 }

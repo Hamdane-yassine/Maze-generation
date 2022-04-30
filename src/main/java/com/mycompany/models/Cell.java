@@ -11,7 +11,7 @@ public class Cell {
     public static Color SELECTED_COLOR = Color.BISQUE;
     public static Color POPED_UP = Color.WHITE;
     public static Color WALL_COLOR = Color.BLACK;
-    public static Color PATH_COLOR = Color.WHITE;
+    public static Color PATH_COLOR = Color.RED;
     public static Color ROOT_TARGET_COLOR = Color.LIGHTCYAN;
 
     public static final byte TOP_WALL = 0;
@@ -24,9 +24,9 @@ public class Cell {
     private Wall[] walls;
     private int cost;
     private boolean linked = false;
-    private ArrayList<Cell> links;
+    private ArrayList<ArrayList<Integer>> links;
 
-    public Cell(int x, int y, int w, int h, int i, int j, int id, boolean selected, boolean visited, boolean inpath, Wall[] walls, int cost, boolean linked, ArrayList<Cell> links) {
+    public Cell(int x, int y, int w, int h, int i, int j, int id, boolean selected, boolean visited, boolean inpath, boolean rootTarget, Wall[] walls, int cost, boolean linked, ArrayList<ArrayList<Integer>> links) {
         super();
         this.x = x;
         this.y = y;
@@ -38,6 +38,7 @@ public class Cell {
         this.selected = selected;
         this.visited = visited;
         this.inpath = inpath;
+        this.rootTarger = rootTarget;
         this.walls = walls;
         this.cost = cost;
         this.linked = linked;
@@ -62,16 +63,20 @@ public class Cell {
         this.rootTarger = false;
     }
 
+    public boolean isRootTarger() {
+        return rootTarger;
+    }
+
     public void setRootTarger(boolean rootTarger) {
         this.rootTarger = rootTarger;
     }
 
-    public void setLinks(ArrayList<Cell> links) {
-        this.links = links;
+    public ArrayList<ArrayList<Integer>> getLinks() {
+        return links;
     }
 
-    public ArrayList<Cell> getLinks() {
-        return links;
+    public void setLinks(ArrayList<ArrayList<Integer>> links) {
+        this.links = links;
     }
 
     public void setLinked(boolean linked) {
@@ -171,9 +176,15 @@ public class Cell {
             to.breakWall(TOP_WALL);
         }
         this.linked = true;
-        this.links.add(to);
         to.linked = true;
-        to.links.add(this);
+        ArrayList<Integer> arr = new ArrayList<>();
+        arr.add(to.getI());
+        arr.add(to.getJ());
+        this.links.add(arr);
+        arr = new ArrayList<>();
+        arr.add(i);
+        arr.add(j);
+        to.links.add(arr);
     }
 
     public void leave() {
