@@ -18,7 +18,7 @@ public class App extends Application {
     public void start(Stage stage) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("../mazegeneration/Maze.fxml"));
         Scene scene = new Scene(root, Screen.getPrimary().getBounds().getWidth() * 0.80, Screen.getPrimary().getBounds().getHeight() * 0.80);
-        stage.setTitle("Generation Des labyrinth");
+        stage.setTitle("Generation des labyrinthes");
         stage.setResizable(false);
         stage.setScene(scene);
         stage.show();

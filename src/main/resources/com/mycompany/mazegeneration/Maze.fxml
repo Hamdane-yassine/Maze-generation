@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.geometry.Rectangle2D?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
@@ -13,19 +14,19 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<SplitPane fx:id="splitPane" dividerPositions="0.25" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" nodeOrientation="LEFT_TO_RIGHT" pickOnBounds="false" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.main.MazeController">
+<SplitPane fx:id="splitPane" dividerPositions="0.25" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" nodeOrientation="LEFT_TO_RIGHT" pickOnBounds="false" prefHeight="864.0" prefWidth="1536.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.main.MazeController">
    <items>
       <ScrollPane fx:id="scrollpane" fitToWidth="true" prefHeight="200.0" prefWidth="200.0">
          <content>
-            <VBox fx:id="leftPane" prefHeight="521.0" prefWidth="118.0">
+            <VBox fx:id="leftPane" prefHeight="847.0" prefWidth="370.0">
                <children>
-                  <VBox prefHeight="75.0" prefWidth="114.0" spacing="2.0" style="-fx-padding: 10; -fx-border-style: solid inside; -fx-border-width: 2px; -fx-border-insets: 2; -fx-border-radius: 4; -fx-border-color: lightgray;" VBox.vgrow="NEVER">
+                  <VBox prefHeight="137.0" prefWidth="380.0" spacing="2.0" style="-fx-padding: 10; -fx-border-style: solid inside; -fx-border-width: 2px; -fx-border-insets: 2; -fx-border-radius: 4; -fx-border-color: lightgray;" VBox.vgrow="NEVER">
                      <children>
                         <HBox alignment="CENTER" prefHeight="0.0" prefWidth="79.0" spacing="2.0" VBox.vgrow="NEVER">
                            <children>
-                              <Label text="INITIALISATION" textFill="#281bdc">
+                              <Label prefHeight="18.0" prefWidth="125.0" text="INITIALISATION" textFill="#0d868e">
                                  <font>
-                                    <Font name="Comic Sans MS Bold" size="14.0" />
+                                    <Font name="Consolas Bold" size="16.0" />
                                  </font>
                               </Label>
                            </children>
@@ -35,12 +36,12 @@
                         </HBox>
                         <HBox alignment="CENTER" prefHeight="0.0" prefWidth="79.0" spacing="2.0" VBox.vgrow="NEVER">
                            <children>
-                              <Label text="Taille : ">
+                              <Label prefHeight="38.0" prefWidth="148.0" text="Taille    : " textFill="#636b6a">
                                  <font>
-                                    <Font name="Courier New" size="14.0" />
+                                    <Font name="Consolas Bold" size="16.0" />
                                  </font>
                               </Label>
-                              <ComboBox fx:id="gridsize" prefWidth="150.0" />
+                              <ComboBox fx:id="gridsize" prefHeight="40.0" prefWidth="150.4" />
                            </children>
                            <padding>
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -48,7 +49,10 @@
                         </HBox>
                         <HBox alignment="CENTER" prefHeight="24.0" prefWidth="79.0" spacing="2.0" VBox.vgrow="NEVER">
                            <children>
-                              <Button fx:id="createGrid" mnemonicParsing="false" onAction="#UpdateGrid" text="Créer une grille" />
+                              <Button fx:id="createGrid" mnemonicParsing="false" onAction="#UpdateGrid" prefHeight="41.0" prefWidth="150.0" text="Créer une grille" textFill="#636b6a">
+                                 <font>
+                                    <Font name="Consolas Bold" size="14.0" />
+                                 </font></Button>
                            </children>
                            <padding>
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -60,9 +64,9 @@
                      <children>
                         <HBox alignment="CENTER" prefHeight="0.0" prefWidth="79.0" spacing="2.0" VBox.vgrow="NEVER">
                            <children>
-                              <Label text="GENERATION">
+                              <Label text="GENERATION" textFill="#0d868e">
                                  <font>
-                                    <Font name="Courier New Bold" size="14.0" />
+                                    <Font name="Consolas Bold" size="16.0" />
                                  </font>
                               </Label>
                            </children>
@@ -72,12 +76,12 @@
                         </HBox>
                         <HBox alignment="CENTER" prefHeight="0.0" prefWidth="79.0" spacing="2.0" VBox.vgrow="NEVER">
                            <children>
-                              <Label text="Algorithme : ">
+                              <Label prefHeight="36.0" prefWidth="159.0" text="Algorithme : " textFill="#636b6a">
                                  <font>
-                                    <Font name="Courier New" size="14.0" />
+                                    <Font name="Consolas Bold" size="16.0" />
                                  </font>
                               </Label>
-                              <ComboBox fx:id="selectedgenAlgo" prefWidth="150.0" />
+                              <ComboBox fx:id="selectedgenAlgo" prefHeight="40.0" prefWidth="150.0" />
                            </children>
                            <padding>
                               <Insets left="5.0" right="5.0" top="5.0" />
@@ -85,12 +89,12 @@
                         </HBox>
                         <HBox alignment="CENTER" prefHeight="0.0" prefWidth="79.0" spacing="2.0">
                            <children>
-                              <Label text="Vitesse :">
+                              <Label prefHeight="34.0" prefWidth="171.0" text="Vitesse    :" textFill="#636b6a">
                                  <font>
-                                    <Font name="Courier New" size="14.0" />
+                                    <Font name="Consolas Bold" size="16.0" />
                                  </font>
                               </Label>
-                              <Slider fx:id="genslider" blockIncrement="25.0" minorTickCount="0" showTickMarks="true" value="50.0">
+                              <Slider fx:id="genslider" blockIncrement="25.0" minorTickCount="0" prefHeight="34.0" prefWidth="140.0" showTickMarks="true" value="50.0">
                                  <padding>
                                     <Insets top="10.0" />
                                  </padding></Slider>
@@ -101,8 +105,14 @@
                         </HBox>
                         <HBox alignment="CENTER" prefHeight="24.0" prefWidth="79.0" spacing="2.0">
                            <children>
-                              <Button mnemonicParsing="false" onAction="#GenStep" text="Pas à pas" />
-                              <Button mnemonicParsing="false" onAction="#MazeGeneration" text="Exécuter " />
+                              <Button mnemonicParsing="false" onAction="#GenStep" prefHeight="41.0" prefWidth="90.0" text="Pas à pas" textFill="#636b6a">
+                                 <font>
+                                    <Font name="Consolas Bold" size="14.0" />
+                                 </font></Button>
+                              <Button mnemonicParsing="false" onAction="#MazeGeneration" prefHeight="40.0" prefWidth="90.0" text="Exécuter " textFill="#636b6a">
+                                 <font>
+                                    <Font name="Consolas Bold" size="14.0" />
+                                 </font></Button>
                            </children>
                            <padding>
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -114,9 +124,9 @@
                      <children>
                         <HBox alignment="CENTER" prefHeight="0.0" prefWidth="79.0" spacing="2.0" VBox.vgrow="NEVER">
                            <children>
-                              <Label text="RESOUDRE">
+                              <Label text="RESOLUTION" textFill="#0d868e">
                                  <font>
-                                    <Font name="Courier New Bold" size="14.0" />
+                                    <Font name="Consolas Bold" size="16.0" />
                                  </font>
                               </Label>
                            </children>
@@ -126,12 +136,12 @@
                         </HBox>
                         <HBox alignment="CENTER" prefHeight="0.0" prefWidth="79.0" spacing="2.0" VBox.vgrow="NEVER">
                            <children>
-                              <Label text="Algorithme : ">
+                              <Label prefHeight="27.0" prefWidth="153.0" text="Algorithme : " textFill="#636b6a">
                                  <font>
-                                    <Font name="Courier New" size="14.0" />
+                                    <Font name="Consolas Bold" size="16.0" />
                                  </font>
                               </Label>
-                              <ComboBox fx:id="solselect" prefWidth="150.0" />
+                              <ComboBox fx:id="solselect" prefHeight="40.0" prefWidth="150.0" />
                            </children>
                            <padding>
                               <Insets left="5.0" right="5.0" top="5.0" />
@@ -139,12 +149,12 @@
                         </HBox>
                         <HBox alignment="CENTER" prefHeight="0.0" prefWidth="79.0" spacing="2.0">
                            <children>
-                              <Label text="Vitesse :">
+                              <Label prefHeight="30.0" prefWidth="168.0" text="Vitesse    :" textFill="#636b6a">
                                  <font>
-                                    <Font name="Courier New" size="14.0" />
+                                    <Font name="Consolas Bold" size="16.0" />
                                  </font>
                               </Label>
-                              <Slider fx:id="solslider" blockIncrement="25.0" minorTickCount="0" showTickMarks="true" value="50.0">
+                              <Slider fx:id="solslider" blockIncrement="25.0" minorTickCount="0" prefHeight="34.0" prefWidth="140.0" showTickMarks="true" value="50.0">
                                  <padding>
                                     <Insets top="10.0" />
                                  </padding>
@@ -156,9 +166,18 @@
                         </HBox>
                         <HBox alignment="CENTER" prefHeight="24.0" prefWidth="79.0" spacing="2.0">
                            <children>
-                              <Button mnemonicParsing="false" onAction="#resetMazeSol" text="réinitialiser" />
-                              <Button mnemonicParsing="false" onAction="#SolStep" text="Pas à pas" />
-                              <Button mnemonicParsing="false" onAction="#MazeSolving" text="Exécuter " />
+                              <Button mnemonicParsing="false" onAction="#resetMazeSol" prefHeight="27.0" prefWidth="130.0" text="Réinitialiser" textFill="#636b6a">
+                                 <font>
+                                    <Font name="Consolas Bold" size="14.0" />
+                                 </font></Button>
+                              <Button mnemonicParsing="false" onAction="#SolStep" prefHeight="41.0" prefWidth="90.0" text="Pas à pas" textFill="#636b6a">
+                                 <font>
+                                    <Font name="Consolas Bold" size="14.0" />
+                                 </font></Button>
+                              <Button mnemonicParsing="false" onAction="#MazeSolving" prefHeight="41.0" prefWidth="90.0" text="Exécuter " textFill="#636b6a">
+                                 <font>
+                                    <Font name="Consolas Bold" size="14.0" />
+                                 </font></Button>
                            </children>
                            <padding>
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -170,9 +189,9 @@
                      <children>
                         <HBox alignment="CENTER" prefHeight="0.0" prefWidth="79.0" spacing="2.0" VBox.vgrow="NEVER">
                            <children>
-                              <Label text="ENREGISTREMENT">
+                              <Label text="ENREGISTREMENT" textFill="#0d868e">
                                  <font>
-                                    <Font name="Courier New Bold" size="14.0" />
+                                    <Font name="Consolas Bold" size="16.0" />
                                  </font>
                               </Label>
                            </children>
@@ -182,19 +201,22 @@
                         </HBox>
                         <HBox alignment="CENTER" prefHeight="0.0" prefWidth="79.0" spacing="2.0" VBox.vgrow="NEVER">
                            <children>
-                              <Label text="Labyrinth :">
+                              <Label prefHeight="39.0" prefWidth="156.0" text="Labyrinthe :" textFill="#636b6a">
                                  <font>
-                                    <Font name="Courier New" size="14.0" />
+                                    <Font name="Consolas Bold" size="16.0" />
                                  </font>
                               </Label>
-                              <ComboBox fx:id="savebox" prefWidth="150.0" />
-                              <ImageView fitHeight="24.0" fitWidth="30.0" focusTraversable="true" nodeOrientation="INHERIT" onMouseClicked="#MazeSettings" pickOnBounds="true" preserveRatio="true">
+                              <ComboBox fx:id="savebox" prefHeight="40.0" prefWidth="150.0" />
+                              <ImageView fitHeight="38.0" fitWidth="22.0" focusTraversable="true" nodeOrientation="INHERIT" onMouseClicked="#MazeSettings" pickOnBounds="true" preserveRatio="true">
                                  <HBox.margin>
-                                    <Insets left="6.0" />
+                                    <Insets left="5.0" right="-30.0" top="5.0" />
                                  </HBox.margin>
                                  <image>
                                     <Image url="@../icones/settings.png" />
                                  </image>
+                                 <viewport>
+                                    <Rectangle2D />
+                                 </viewport>
                               </ImageView>
                            </children>
                            <padding>
@@ -203,9 +225,18 @@
                         </HBox>
                         <HBox alignment="CENTER" prefHeight="24.0" prefWidth="79.0" spacing="2.0">
                            <children>
-                              <Button mnemonicParsing="false" onAction="#MazeLoading" text="Charger" />
-                              <Button mnemonicParsing="false" onAction="#Save" text="Enregistrer" />
-                              <Button mnemonicParsing="false" onAction="#ExportImage" text="Exporter image" />
+                              <Button mnemonicParsing="false" onAction="#MazeLoading" prefHeight="40.0" prefWidth="90.0" text="Charger" textFill="#636b6a">
+                                 <font>
+                                    <Font name="Consolas Bold" size="14.0" />
+                                 </font></Button>
+                              <Button mnemonicParsing="false" onAction="#Save" prefHeight="29.0" prefWidth="116.0" text="Enregistrer" textFill="#636b6a">
+                                 <font>
+                                    <Font name="Consolas Bold" size="14.0" />
+                                 </font></Button>
+                              <Button mnemonicParsing="false" onAction="#ExportImage" prefHeight="29.0" prefWidth="136.0" text="Exporter image" textFill="#636b6a">
+                                 <font>
+                                    <Font name="Consolas Bold" size="14.0" />
+                                 </font></Button>
                            </children>
                            <padding>
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -213,13 +244,13 @@
                         </HBox>
                      </children>
                   </VBox>
-                  <VBox prefHeight="75.0" prefWidth="114.0" spacing="2.0" style="-fx-padding: 10; -fx-border-style: solid inside; -fx-border-width: 2px; -fx-border-insets: 2; -fx-border-radius: 4; -fx-border-color: lightgray;">
+                  <VBox prefHeight="98.0" prefWidth="380.0" spacing="2.0" style="-fx-padding: 10; -fx-border-style: solid inside; -fx-border-width: 2px; -fx-border-insets: 2; -fx-border-radius: 4; -fx-border-color: lightgray;">
                      <children>
-                        <HBox alignment="CENTER" prefHeight="21.0" prefWidth="314.0" spacing="2.0" VBox.vgrow="NEVER">
+                        <HBox alignment="CENTER" prefHeight="78.0" prefWidth="352.0" spacing="2.0" VBox.vgrow="NEVER">
                            <children>
-                              <Label text="PFE SMI - 2021-2022" textFill="#868484">
+                              <Label text="PFE SMI - 2021-2022" textFill="#658c89">
                                  <font>
-                                    <Font name="Courier New" size="14.0" />
+                                    <Font name="Consolas Bold" size="15.0" />
                                  </font>
                               </Label>
                            </children>

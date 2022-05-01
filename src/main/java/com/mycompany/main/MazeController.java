@@ -123,9 +123,9 @@ public class MazeController implements Initializable {
         this.LoadMazes();
         this.gridsize.setItems(FXCollections.observableArrayList(new String[]{"10x10", "15x15", "25x25", "50x50", "100x100"}));
         this.gridsize.getSelectionModel().selectFirst();
-        this.selectedgenAlgo.setItems(FXCollections.observableArrayList(new String[]{"Recursive Backtracker", "Kruskal’s", "Simplified Prim’s", "True Prim’s", "Aldous-Broder", "Wilson’s"}));
+        this.selectedgenAlgo.setItems(FXCollections.observableArrayList(new String[]{"Recursive Backtracker", "Kruskal", "Simplified Prim", "True Prim", "Aldous-Broder", "Wilson"}));
         this.selectedgenAlgo.getSelectionModel().selectFirst();
-        this.solselect.setItems(FXCollections.observableArrayList(new String[]{"Dijkstra’s", "Depth First Search", "Breadth First Search", "A*"}));
+        this.solselect.setItems(FXCollections.observableArrayList(new String[]{"Dijkstra", "Depth First Search", "Breadth First Search", "A*"}));
         this.solselect.getSelectionModel().selectFirst();
         this.grid = new MazeGrid(rows, columns);
         this.scrollmaze.setContent(grid);

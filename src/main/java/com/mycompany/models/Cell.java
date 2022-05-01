@@ -7,12 +7,12 @@ import javafx.scene.paint.Color;
 public class Cell {
 
     public static Color VISITED_COLOR = Color.WHITE;
-    public static Color UNVISITED_COLOR = Color.FLORALWHITE;
-    public static Color SELECTED_COLOR = Color.BISQUE;
+    public static Color UNVISITED_COLOR = Color.AZURE;
+    public static Color SELECTED_COLOR = Color.CADETBLUE;
     public static Color POPED_UP = Color.WHITE;
     public static Color WALL_COLOR = Color.BLACK;
-    public static Color PATH_COLOR = Color.RED;
-    public static Color ROOT_TARGET_COLOR = Color.DARKVIOLET;
+    public static Color PATH_COLOR = Color.BROWN;
+    public static Color ROOT_TARGET_COLOR = Color.DARKGRAY;
 
     public static final byte TOP_WALL = 0;
     public static final byte BOTTOM_WALL = 1;
