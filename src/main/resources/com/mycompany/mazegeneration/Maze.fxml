@@ -16,9 +16,9 @@
 
 <SplitPane fx:id="splitPane" dividerPositions="0.25" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" nodeOrientation="LEFT_TO_RIGHT" pickOnBounds="false" prefHeight="864.0" prefWidth="1536.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.main.MazeController">
    <items>
-      <ScrollPane fx:id="scrollpane" fitToWidth="true" prefHeight="200.0" prefWidth="200.0">
+      <ScrollPane fx:id="scrollpane" fitToWidth="true">
          <content>
-            <VBox fx:id="leftPane" prefHeight="847.0" prefWidth="370.0">
+            <VBox fx:id="leftPane">
                <children>
                   <VBox prefHeight="137.0" prefWidth="380.0" spacing="2.0" style="-fx-padding: 10; -fx-border-style: solid inside; -fx-border-width: 2px; -fx-border-insets: 2; -fx-border-radius: 4; -fx-border-color: lightgray;" VBox.vgrow="NEVER">
                      <children>
@@ -264,6 +264,6 @@
             </VBox>
          </content>
       </ScrollPane>
-      <ScrollPane fx:id="scrollmaze" fitToHeight="true" fitToWidth="true" prefHeight="200.0" prefWidth="200.0" />
+      <ScrollPane fx:id="scrollmaze" fitToHeight="true" fitToWidth="true" />
    </items>
 </SplitPane>

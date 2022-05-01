@@ -85,7 +85,6 @@ public class MazeController implements Initializable {
     private Timeline timeline;
     private KeyFrame generationKey;
     private KeyFrame solvingKey;
-    private Stage stage;
     @FXML
     VBox leftPane;
     @FXML
@@ -216,19 +215,19 @@ public class MazeController implements Initializable {
                     case "Recursive Backtracker":
                         this.genAlgo = new RecursiveBacktracker(this.grid.getCells(), rows, columns);
                         break;
-                    case "Kruskal’s":
+                    case "Kruskal":
                         this.genAlgo = new Kruskals(this.grid.getCells(), this.rows, this.columns);
                         break;
-                    case "Simplified Prim’s":
+                    case "Simplified Prim":
                         this.genAlgo = new SimplifiedPrims(this.grid.getCells(), this.rows, this.columns);
                         break;
-                    case "True Prim’s":
+                    case "True Prim":
                         this.genAlgo = new TruePrims(this.grid.getCells(), this.rows, this.columns);
                         break;
                     case "Aldous-Broder":
                         this.genAlgo = new AldousBroder(this.grid.getCells(), this.rows, this.columns);
                         break;
-                    case "Wilson’s":
+                    case "Wilson":
                         this.genAlgo = new Wilsons(this.grid.getCells(), this.rows, this.columns);
                         break;
                 }
@@ -244,19 +243,19 @@ public class MazeController implements Initializable {
                 case "Recursive Backtracker":
                     this.genAlgo = new RecursiveBacktracker(this.grid.getCells(), rows, columns);
                     break;
-                case "Kruskal’s":
+                case "Kruskal":
                     this.genAlgo = new Kruskals(this.grid.getCells(), this.rows, this.columns);
                     break;
-                case "Simplified Prim’s":
+                case "Simplified Prim":
                     this.genAlgo = new SimplifiedPrims(this.grid.getCells(), this.rows, this.columns);
                     break;
-                case "True Prim’s":
+                case "True Prim":
                     this.genAlgo = new TruePrims(this.grid.getCells(), this.rows, this.columns);
                     break;
                 case "Aldous-Broder":
-                    this.genAlgo = new TruePrims(this.grid.getCells(), this.rows, this.columns);
+                    this.genAlgo = new AldousBroder(this.grid.getCells(), this.rows, this.columns);
                     break;
-                case "Wilson’s":
+                case "Wilson":
                     this.genAlgo = new Wilsons(this.grid.getCells(), this.rows, this.columns);
                     break;
             }
@@ -318,7 +317,7 @@ public class MazeController implements Initializable {
                     this.startSolving = true;
                     this.solalgoselected = this.solselect.getSelectionModel().getSelectedItem().toString();
                     switch (solalgoselected) {
-                        case "Dijkstra’s":
+                        case "Dijkstra":
                             this.solAlgo = new Dijkstra(this.grid.getCells()[0][0], this.grid.getCells()[this.rows - 1][this.columns - 1], this.grid.getCells());
                             break;
                         case "Depth First Search":
@@ -374,7 +373,7 @@ public class MazeController implements Initializable {
                 this.startSolving = true;
                 this.solalgoselected = this.solselect.getSelectionModel().getSelectedItem().toString();
                 switch (solalgoselected) {
-                    case "Dijkstra’s":
+                    case "Dijkstra":
                         this.solAlgo = new Dijkstra(this.grid.getCells()[0][0], this.grid.getCells()[this.rows - 1][this.columns - 1], this.grid.getCells());
                         break;
                     case "Depth First Search":
@@ -613,13 +612,8 @@ public class MazeController implements Initializable {
         }
     }
 
-    public void setStage(Stage stage) {
-        this.stage = stage;
-    }
-
     public MazeGrid getGrid() {
         return grid;
     }
-    
-    
+
 }
