@@ -127,6 +127,7 @@ public class MazeController implements Initializable {
         this.solselect.setItems(FXCollections.observableArrayList(new String[]{"Dijkstra", "Depth First Search", "Breadth First Search", "A*"}));
         this.solselect.getSelectionModel().selectFirst();
         this.grid = new MazeGrid(rows, columns);
+        this.grid.setPadding(new Insets(10, 10, 10, 10));
         this.scrollmaze.setContent(grid);
         this.leftPane.setPadding(new Insets(2, 2, 2, 2));
         this.leftPane.setSpacing(10);
