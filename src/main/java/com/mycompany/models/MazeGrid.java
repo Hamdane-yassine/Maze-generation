@@ -8,7 +8,6 @@ import javafx.scene.CacheHint;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 
 /**
@@ -18,8 +17,6 @@ import javafx.stage.Screen;
 public final class MazeGrid extends BorderPane {
 
     private final Canvas canvas;
-    private final Color BACKGROUND_COLOR = Color.BLACK;
-    private final Color FOREGROUND_COLOR = Color.WHITE;
     private int rows;
     private int columns;
     private Cell cells[][];
@@ -36,6 +33,7 @@ public final class MazeGrid extends BorderPane {
         this.setCenter(this.canvas);
         this.InitialCells();
         this.autosize();
+        canvas.getGraphicsContext2D().setLineWidth(1.2);
         draw(canvas.getGraphicsContext2D());
     }
 
@@ -58,9 +56,7 @@ public final class MazeGrid extends BorderPane {
     }
 
     public void draw(GraphicsContext gc) {
-        gc.setFill(BACKGROUND_COLOR);
         gc.fillRect(0, 0, this.canvas.getWidth(), this.canvas.getHeight());
-        gc.setFill(FOREGROUND_COLOR);
         for (int i = 0; i < this.rows; i++) {
             for (int j = 0; j < this.columns; j++) {
                 this.cells[i][j].draw(gc);
@@ -122,10 +118,6 @@ public final class MazeGrid extends BorderPane {
 
     public void setCells(Cell[][] cells) {
         this.cells = cells;
-    }
-
-    public double twoDegit(double a) {
-        return Math.round(a / 100.0) * 100.0;
     }
 
 }

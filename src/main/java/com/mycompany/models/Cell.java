@@ -120,8 +120,6 @@ public class Cell {
         gc.fillRect(x, y, w, h);
         // show walls
         int x1 = 0, y1 = 0, x2 = 0, y2 = 0;
-        gc.setLineWidth(1.2);
-        gc.setStroke(WALL_COLOR);
         for (int k = 0; k < this.walls.length; k++) {
             if (!this.walls[k].isBroken()) {
                 switch (k) {
