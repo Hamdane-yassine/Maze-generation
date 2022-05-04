@@ -414,13 +414,13 @@ public class MazeController implements Initializable {
         if (this.grid.isAffected() && this.genAlgo != null && this.genAlgo.isFinished() && !mazecharged || mazecharged && this.solAlgo != null && this.solAlgo.isFinished()) {
             String defaultName;
             if (!this.MazeList.isEmpty()) {
-                defaultName = "Labyrinth " + (this.MazeList.get(this.MazeList.size() - 1).getID() + 1);
+                defaultName = "Labyrinthe " + (this.MazeList.get(this.MazeList.size() - 1).getID() + 1);
             } else {
-                defaultName = "Labyrinth 1";
+                defaultName = "Labyrinthe 1";
             }
             TextInputDialog inputdialog = new TextInputDialog(defaultName);
             inputdialog.setContentText("Nom: ");
-            inputdialog.setHeaderText("Entrer le nom de labyrinth");
+            inputdialog.setHeaderText("Entrer le nom du labyrinthe");
             Optional<String> result = inputdialog.showAndWait();
             if (result.isPresent()) {
                 final String name;
@@ -434,7 +434,7 @@ public class MazeController implements Initializable {
                     Platform.runLater(() -> {
                         String json = gson.toJson(grid.getCells());
                         if (this.solalgoselected == null) {
-                            this.solalgoselected = "Non résolue";
+                            this.solalgoselected = "Non résolu";
                         }
                         MazeDAO.SaveMaze(name, this.genalgoselected, this.solalgoselected, rows, columns, json);
                         LoadMazes();
@@ -446,8 +446,8 @@ public class MazeController implements Initializable {
         } else {
             Alert ms1 = new Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
             ms1.setTitle("Message");
-            ms1.setHeaderText("Impossible d'enregistrer labyrinth");
-            ms1.setContentText("Aucune labyrinth a été créer");
+            ms1.setHeaderText("Impossible d'enregistrer un labyrinthe");
+            ms1.setContentText("Aucun labyrinthe a été crée");
             ms1.show();
         }
 
@@ -464,7 +464,7 @@ public class MazeController implements Initializable {
         TableView tv = this.MazeTable();
         tv.setPadding(new Insets(10, 10, 10, 10));
         popupwindow.initModality(Modality.APPLICATION_MODAL);
-        popupwindow.setTitle("Labyrinths");
+        popupwindow.setTitle("Labyrinthes");
         b2.setOnAction(e -> popupwindow.close());
         b1.setOnAction((event) -> {
             if (tv.getSelectionModel().getSelectedItem() != null) {
@@ -475,8 +475,8 @@ public class MazeController implements Initializable {
             } else {
                 Alert ms1 = new Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
                 ms1.setTitle("INFORMATION");
-                ms1.setHeaderText("SÉLECTIONNER UNE LABYRINTH");
-                ms1.setContentText("Vous devez sélectionner une labyrinth !");
+                ms1.setHeaderText("SÉLECTIONNER UN LABYRINTHE");
+                ms1.setContentText("Veuillez sélectionner un labyrinthe !");
                 ms1.showAndWait();
             }
         });
