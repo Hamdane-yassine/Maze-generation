@@ -19,7 +19,7 @@ public class Cell {
     public static final byte LEFT_WALL = 2;
     public static final byte RIGHT_WALL = 3;
 
-    private double x, y, w, h;
+    private int x, y, w, h;
     private int i, j, id;
     private boolean selected, visited, inpath, rootTarger;
     private Wall[] walls;
@@ -27,7 +27,7 @@ public class Cell {
     private boolean linked = false;
     private ArrayList<ArrayList<Integer>> links;
 
-    public Cell(double x, double y, double w, double h, int i, int j, int id, boolean selected, boolean visited, boolean inpath, boolean rootTarget, Wall[] walls, int cost, boolean linked, ArrayList<ArrayList<Integer>> links) {
+    public Cell(int x, int y, int w, int h, int i, int j, int id, boolean selected, boolean visited, boolean inpath, boolean rootTarget, Wall[] walls, int cost, boolean linked, ArrayList<ArrayList<Integer>> links) {
         super();
         this.x = x;
         this.y = y;
@@ -46,7 +46,7 @@ public class Cell {
         this.links = links;
     }
 
-    public Cell(double x, double y, double w, double h, int i, int j, int id) {
+    public Cell(int x, int y, int w, int h, int i, int j, int id) {
         super();
         this.x = x;
         this.y = y;
@@ -118,39 +118,39 @@ public class Cell {
             gc.setFill(UNVISITED_COLOR);
         }
         gc.fillRect(x, y, w, h);
-
         // show walls
-        double x1 = 0.0, y1 = 0.0, x2 = 0.0, y2 = 0.0;
+        int x1 = 0, y1 = 0, x2 = 0, y2 = 0;
+        gc.setLineWidth(1.2);
         gc.setStroke(WALL_COLOR);
         for (int k = 0; k < this.walls.length; k++) {
             if (!this.walls[k].isBroken()) {
                 switch (k) {
-                    case TOP_WALL:
+                    case TOP_WALL -> {
                         x1 = x;
                         y1 = y;
                         x2 = x + w;
                         y2 = y;
-                        break;
-                    case BOTTOM_WALL:
+                    }
+                    case BOTTOM_WALL -> {
                         x1 = x;
                         y1 = y + h;
                         x2 = x + w;
                         y2 = y + h;
-                        break;
-                    case LEFT_WALL:
+                    }
+                    case LEFT_WALL -> {
                         x1 = x;
                         y1 = y;
                         x2 = x;
                         y2 = y + h;
-                        break;
-                    case RIGHT_WALL:
+                    }
+                    case RIGHT_WALL -> {
                         x1 = x + w;
                         y1 = y;
                         x2 = x + w;
                         y2 = y + h;
-                        break;
-                    default:
-                        break;
+                    }
+                    default -> {
+                    }
                 }
                 gc.strokeLine(x1, y1, x2, y2);
             }
@@ -200,19 +200,35 @@ public class Cell {
         this.selected = true;
     }
 
-    public void setX(double x) {
+    public int getX() {
+        return x;
+    }
+
+    public void setX(int x) {
         this.x = x;
     }
 
-    public void setY(double y) {
+    public int getY() {
+        return y;
+    }
+
+    public void setY(int y) {
         this.y = y;
     }
 
-    public void setW(double w) {
+    public int getW() {
+        return w;
+    }
+
+    public void setW(int w) {
         this.w = w;
     }
 
-    public void setH(double h) {
+    public int getH() {
+        return h;
+    }
+
+    public void setH(int h) {
         this.h = h;
     }
 
@@ -248,28 +264,12 @@ public class Cell {
         return this.visited;
     }
 
-    public double getW() {
-        return w;
-    }
-
-    public double getH() {
-        return h;
-    }
-
     public Wall[] getWalls() {
         return walls;
     }
 
     public boolean isSelected() {
         return selected;
-    }
-
-    public double getX() {
-        return x;
-    }
-
-    public double getY() {
-        return y;
     }
 
     public void setInpath(boolean inpath) {

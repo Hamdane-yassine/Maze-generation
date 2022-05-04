@@ -4,15 +4,12 @@
  */
 package com.mycompany.models;
 
-import javafx.animation.AnimationTimer;
-import javafx.application.Platform;
+import javafx.scene.CacheHint;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Screen;
-import javafx.stage.Stage;
 
 /**
  *
@@ -20,42 +17,44 @@ import javafx.stage.Stage;
  */
 public final class MazeGrid extends BorderPane {
 
-    private Canvas canvas;
+    private final Canvas canvas;
     private final Color BACKGROUND_COLOR = Color.BLACK;
     private final Color FOREGROUND_COLOR = Color.WHITE;
     private int rows;
     private int columns;
     private Cell cells[][];
     private boolean affected = false;
-    private final AnimationTimer timer;
 
     public MazeGrid(int rows, int columns) {
-        double w = CalcWidth();
-        double h = CalcHeight();
         this.rows = rows;
         this.columns = columns;
+        int w = CalcWidth();
+        int h = CalcHeight();
         this.canvas = new Canvas(w, h);
+        this.canvas.setCache(true);
+        this.canvas.setCacheHint(CacheHint.SPEED);
         this.setCenter(this.canvas);
         this.InitialCells();
         this.autosize();
-        this.timer = new AnimationTimer() {
-            @Override
-            public void handle(long now) {
-                draw(canvas.getGraphicsContext2D());
-            }
-        };
-        Platform.runLater(timer::start);
-        timer.stop();
-
+        draw(canvas.getGraphicsContext2D());
     }
 
-    public double CalcWidth() {
-        double initialWidth = ((Screen.getPrimary().getBounds().getWidth() * 0.80) - ((Screen.getPrimary().getBounds().getWidth() * 0.80) * 0.25)) - 45.0;
-        return twoDegit(initialWidth);
+    public int CalcWidth() {
+        int initialWidth = (int) (((Screen.getPrimary().getBounds().getWidth() * 0.90) - ((Screen.getPrimary().getBounds().getWidth() * 0.90) * 0.25)) - 45.0);
+        int val = initialWidth % this.columns;
+        if (val != 0) {
+            initialWidth += (this.columns - val);
+        }
+        return initialWidth;
     }
 
-    public double CalcHeight() {
-        return twoDegit(((Screen.getPrimary().getBounds().getHeight() * 0.80)) - 15.0);
+    public int CalcHeight() {
+        int initialHeight = (int) (((Screen.getPrimary().getBounds().getHeight() * 0.81)));
+        int val = initialHeight % this.rows;
+        if (val != 0) {
+            initialHeight += (this.rows - val);
+        }
+        return initialHeight;
     }
 
     public void draw(GraphicsContext gc) {
@@ -69,38 +68,28 @@ public final class MazeGrid extends BorderPane {
         }
     }
 
-    public void Repaint() {
-        double w = CalcWidth();
-        double h = CalcHeight();
+    public void Repaint(boolean charged) {
+        int w = CalcWidth();
+        int h = CalcHeight();
         this.canvas.setWidth(w);
         this.canvas.setHeight(h);
-        this.InitialCells();
-        Platform.runLater(timer::start);
-        timer.stop();
-
-    }
-
-    public void Redraw() {
-        double w = CalcWidth();
-        double h = CalcHeight();
-        this.canvas.setWidth(w);
-        this.canvas.setHeight(h);
-        Platform.runLater(timer::start);
-        timer.stop();
-
+        if (!charged) {
+            this.InitialCells();
+        }
+        draw(canvas.getGraphicsContext2D());
     }
 
     private void InitialCells() {
-        double w = this.canvas.getWidth();
-        double h = this.canvas.getHeight();
-        double cw = w / this.columns;
-        double ch = h / this.rows;
+        int w = (int) this.canvas.getWidth();
+        int h = (int) this.canvas.getHeight();
+        int cw = w / this.columns;
+        int ch = h / this.rows;
         int id = 0;
         this.cells = new Cell[rows][columns];
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
-                double x = j * cw;
-                double y = i * ch;
+                int x = j * cw;
+                int y = i * ch;
                 cells[i][j] = new Cell(x, y, cw, ch, i, j, id);
                 id++;
             }

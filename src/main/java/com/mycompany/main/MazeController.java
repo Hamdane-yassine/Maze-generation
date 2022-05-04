@@ -109,10 +109,7 @@ public class MazeController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle reb) {
 
-        this.scrollpane.maxWidthProperty().bind(splitPane.widthProperty().multiply(0.25));
-        this.scrollpane.minWidthProperty().bind(splitPane.widthProperty().multiply(0.25));
-        this.scrollmaze.maxWidthProperty().bind(splitPane.widthProperty().multiply(0.75));
-        this.scrollmaze.minWidthProperty().bind(splitPane.widthProperty().multiply(0.75));
+        this.splitPane.setDividerPosition(0, 0.25);
         this.genslider.valueProperty().addListener((ObservableValue<? extends Number> arg0, Number arg1, Number arg2) -> {
             MazeController.this.GenVitesse();
         });
@@ -132,20 +129,6 @@ public class MazeController implements Initializable {
         this.leftPane.setPadding(new Insets(2, 2, 2, 2));
         this.leftPane.setSpacing(10);
         this.timeline = new Timeline();
-        this.generationKey = new KeyFrame(Duration.millis(this.genperiod), event -> {
-            if (!this.genAlgo.isFinished()) {
-                this.genAlgo.update();
-            } else {
-                this.timeline.stop();
-            }
-        });
-        this.solvingKey = new KeyFrame(Duration.millis(this.solperiod), event -> {
-            if (!this.solAlgo.isFinished()) {
-                this.solAlgo.update();
-            } else {
-                this.timeline.stop();
-            }
-        });
     }
 
     //Grid management
@@ -154,21 +137,16 @@ public class MazeController implements Initializable {
         this.resetTimer();
         String selectedSize = this.gridsize.getSelectionModel().getSelectedItem().toString();
         switch (selectedSize) {
-            case "10x10":
+            case "10x10" ->
                 this.resetGrid(10, 10);
-                break;
-            case "15x15":
+            case "15x15" ->
                 this.resetGrid(15, 15);
-                break;
-            case "25x25":
+            case "25x25" ->
                 this.resetGrid(25, 25);
-                break;
-            case "50x50":
+            case "50x50" ->
                 this.resetGrid(50, 50);
-                break;
-            case "100x100":
+            case "100x100" ->
                 this.resetGrid(100, 100);
-                break;
         }
     }
 
@@ -179,7 +157,7 @@ public class MazeController implements Initializable {
             this.columns = columns;
             this.grid.setRows(rows);
             this.grid.setColumns(columns);
-            this.grid.Repaint();
+            this.grid.Repaint(false);
             this.ResetAlgorithms();
         }
     }
@@ -198,7 +176,7 @@ public class MazeController implements Initializable {
             this.grid.setAffected(true);
             Cell[][] cells = gson.fromJson(maze.getData(), Cell[][].class);
             this.grid.setCells(cells);
-            this.grid.Redraw();
+            this.grid.Repaint(true);
             this.mazecharged = true;
             this.genalgoselected = maze.getAlgo();
             this.solalgoselected = maze.getSolAlgo();
@@ -213,24 +191,18 @@ public class MazeController implements Initializable {
                 this.genalgoselected = this.selectedgenAlgo.getSelectionModel().getSelectedItem().toString();
                 this.grid.setAffected(true);
                 switch (genalgoselected) {
-                    case "Recursive Backtracker":
+                    case "Recursive Backtracker" ->
                         this.genAlgo = new RecursiveBacktracker(this.grid.getCells(), rows, columns);
-                        break;
-                    case "Kruskal":
+                    case "Kruskal" ->
                         this.genAlgo = new Kruskals(this.grid.getCells(), this.rows, this.columns);
-                        break;
-                    case "Simplified Prim":
+                    case "Simplified Prim" ->
                         this.genAlgo = new SimplifiedPrims(this.grid.getCells(), this.rows, this.columns);
-                        break;
-                    case "True Prim":
+                    case "True Prim" ->
                         this.genAlgo = new TruePrims(this.grid.getCells(), this.rows, this.columns);
-                        break;
-                    case "Aldous-Broder":
+                    case "Aldous-Broder" ->
                         this.genAlgo = new AldousBroder(this.grid.getCells(), this.rows, this.columns);
-                        break;
-                    case "Wilson":
+                    case "Wilson" ->
                         this.genAlgo = new Wilsons(this.grid.getCells(), this.rows, this.columns);
-                        break;
                 }
             }
             this.generate();
@@ -241,24 +213,18 @@ public class MazeController implements Initializable {
         if (this.genAlgo == null) {
             this.genalgoselected = this.selectedgenAlgo.getSelectionModel().getSelectedItem().toString();
             switch (this.genalgoselected) {
-                case "Recursive Backtracker":
+                case "Recursive Backtracker" ->
                     this.genAlgo = new RecursiveBacktracker(this.grid.getCells(), rows, columns);
-                    break;
-                case "Kruskal":
+                case "Kruskal" ->
                     this.genAlgo = new Kruskals(this.grid.getCells(), this.rows, this.columns);
-                    break;
-                case "Simplified Prim":
+                case "Simplified Prim" ->
                     this.genAlgo = new SimplifiedPrims(this.grid.getCells(), this.rows, this.columns);
-                    break;
-                case "True Prim":
+                case "True Prim" ->
                     this.genAlgo = new TruePrims(this.grid.getCells(), this.rows, this.columns);
-                    break;
-                case "Aldous-Broder":
+                case "Aldous-Broder" ->
                     this.genAlgo = new AldousBroder(this.grid.getCells(), this.rows, this.columns);
-                    break;
-                case "Wilson":
+                case "Wilson" ->
                     this.genAlgo = new Wilsons(this.grid.getCells(), this.rows, this.columns);
-                    break;
             }
         }
         if (!this.genAlgo.isFinished()) {
@@ -267,6 +233,7 @@ public class MazeController implements Initializable {
             }
             this.grid.setAffected(true);
             this.genAlgo.update();
+            this.grid.draw(this.grid.getCanvas().getGraphicsContext2D());
             this.hasStepedGen = true;
         }
     }
@@ -282,6 +249,7 @@ public class MazeController implements Initializable {
             this.generationKey = new KeyFrame(Duration.millis(this.genperiod), event -> {
                 if (!this.genAlgo.isFinished()) {
                     this.genAlgo.update();
+                    this.grid.draw(this.grid.getCanvas().getGraphicsContext2D());
                 } else {
                     this.timeline.stop();
                 }
@@ -298,6 +266,8 @@ public class MazeController implements Initializable {
             this.generationKey = new KeyFrame(Duration.millis(this.genperiod), event -> {
                 if (!this.genAlgo.isFinished()) {
                     this.genAlgo.update();
+                    this.grid.draw(this.grid.getCanvas().getGraphicsContext2D());
+
                 } else {
                     this.timeline.stop();
                 }
@@ -318,18 +288,14 @@ public class MazeController implements Initializable {
                     this.startSolving = true;
                     this.solalgoselected = this.solselect.getSelectionModel().getSelectedItem().toString();
                     switch (solalgoselected) {
-                        case "Dijkstra":
+                        case "Dijkstra" ->
                             this.solAlgo = new Dijkstra(this.grid.getCells()[0][0], this.grid.getCells()[this.rows - 1][this.columns - 1], this.grid.getCells());
-                            break;
-                        case "Depth First Search":
+                        case "Depth First Search" ->
                             this.solAlgo = new DepthFirstSearch(this.grid.getCells()[0][0], this.grid.getCells()[this.rows - 1][this.columns - 1], this.grid.getCells());
-                            break;
-                        case "Breadth First Search":
+                        case "Breadth First Search" ->
                             this.solAlgo = new BreadthFirstSearch(this.grid.getCells()[0][0], this.grid.getCells()[this.rows - 1][this.columns - 1], this.grid.getCells());
-                            break;
-                        case "A*":
+                        case "A*" ->
                             this.solAlgo = new AStar(this.grid.getCells()[0][0], this.grid.getCells()[this.rows - 1][this.columns - 1], this.grid.getCells());
-                            break;
                     }
                 }
                 this.MazeId = -1;
@@ -344,6 +310,8 @@ public class MazeController implements Initializable {
             this.solvingKey = new KeyFrame(Duration.millis(this.solperiod), event -> {
                 if (!this.solAlgo.isFinished()) {
                     this.solAlgo.update();
+                    this.grid.draw(this.grid.getCanvas().getGraphicsContext2D());
+
                 } else {
                     this.timeline.stop();
                 }
@@ -374,18 +342,14 @@ public class MazeController implements Initializable {
                 this.startSolving = true;
                 this.solalgoselected = this.solselect.getSelectionModel().getSelectedItem().toString();
                 switch (solalgoselected) {
-                    case "Dijkstra":
+                    case "Dijkstra" ->
                         this.solAlgo = new Dijkstra(this.grid.getCells()[0][0], this.grid.getCells()[this.rows - 1][this.columns - 1], this.grid.getCells());
-                        break;
-                    case "Depth First Search":
+                    case "Depth First Search" ->
                         this.solAlgo = new DepthFirstSearch(this.grid.getCells()[0][0], this.grid.getCells()[this.rows - 1][this.columns - 1], this.grid.getCells());
-                        break;
-                    case "Breadth First Search":
+                    case "Breadth First Search" ->
                         this.solAlgo = new BreadthFirstSearch(this.grid.getCells()[0][0], this.grid.getCells()[this.rows - 1][this.columns - 1], this.grid.getCells());
-                        break;
-                    case "A*":
+                    case "A*" ->
                         this.solAlgo = new AStar(this.grid.getCells()[0][0], this.grid.getCells()[this.rows - 1][this.columns - 1], this.grid.getCells());
-                        break;
                 }
             }
             if (!this.solAlgo.isFinished()) {
@@ -394,6 +358,8 @@ public class MazeController implements Initializable {
                 }
                 this.MazeId = -1;
                 this.solAlgo.update();
+                this.grid.draw(this.grid.getCanvas().getGraphicsContext2D());
+
                 this.hasStepedSol = true;
             }
         }
@@ -411,6 +377,7 @@ public class MazeController implements Initializable {
             this.solvingKey = new KeyFrame(Duration.millis(this.solperiod), event -> {
                 if (!this.solAlgo.isFinished()) {
                     this.solAlgo.update();
+                    this.grid.draw(this.grid.getCanvas().getGraphicsContext2D());
                 } else {
                     this.timeline.stop();
                 }
@@ -444,7 +411,7 @@ public class MazeController implements Initializable {
     }
 
     public void Save() {
-        if (this.grid.isAffected() && this.genAlgo != null && this.genAlgo.isFinished() || mazecharged) {
+        if (this.grid.isAffected() && this.genAlgo != null && this.genAlgo.isFinished() && !mazecharged || mazecharged && this.solAlgo != null && this.solAlgo.isFinished()) {
             String defaultName;
             if (!this.MazeList.isEmpty()) {
                 defaultName = "Labyrinth " + (this.MazeList.get(this.MazeList.size() - 1).getID() + 1);
@@ -608,6 +575,7 @@ public class MazeController implements Initializable {
                 }
             }
             resetTimer();
+            this.grid.draw(this.grid.getCanvas().getGraphicsContext2D());
             this.solAlgo = null;
             this.startSolving = false;
         }
