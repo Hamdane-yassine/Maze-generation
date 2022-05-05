@@ -4,10 +4,6 @@
  */
 package com.mycompany.main;
 
-/**
- *
- * @author HAMDANE
- */
 public class Main {
 
     public static void main(String[] args) {

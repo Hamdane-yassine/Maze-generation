@@ -8,10 +8,7 @@ import com.mycompany.models.Cell;
 import java.util.ArrayList;
 import javafx.scene.canvas.GraphicsContext;
 
-/**
- *
- * @author HAMDANE
- */
+
 public class AldousBroder extends GenerationAlgorithm {
 
     private int unvisited;

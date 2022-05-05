@@ -9,10 +9,6 @@ import java.util.ArrayList;
 import java.util.Random;
 import javafx.scene.canvas.GraphicsContext;
 
-/**
- *
- * @author HAMDANE
- */
 public abstract class GenerationAlgorithm {
 
     private Cell[][] cells;

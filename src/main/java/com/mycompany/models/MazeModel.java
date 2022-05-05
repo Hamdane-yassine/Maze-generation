@@ -4,10 +4,6 @@
  */
 package com.mycompany.models;
 
-/**
- *
- * @author HAMDANE
- */
 public class MazeModel {
 
     private int ID;

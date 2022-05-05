@@ -22,10 +22,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
 
-/**
- *
- * @author HAMDANE
- */
 public class MazeDAO {
 
     public static Connection connect() {

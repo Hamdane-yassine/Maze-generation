@@ -11,10 +11,6 @@ import java.util.LinkedList;
 import java.util.Queue;
 import javafx.scene.canvas.GraphicsContext;
 
-/**
- *
- * @author HAMDANE
- */
 public class BreadthFirstSearch extends SolvingAlgorithm {
 
     private final Queue<Cell> queue;

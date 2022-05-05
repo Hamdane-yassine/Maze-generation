@@ -60,10 +60,6 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import javax.imageio.ImageIO;
 
-/**
- *
- * @author HAMDANE
- */
 public class MazeController implements Initializable {
 
     private int rows = 10;

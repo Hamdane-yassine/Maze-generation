@@ -9,10 +9,6 @@ import java.util.ArrayList;
 import java.util.Stack;
 import javafx.scene.canvas.GraphicsContext;
 
-/**
- *
- * @author HAMDANE
- */
 public class DepthFirstSearch extends SolvingAlgorithm {
 
     private final Stack<Cell> path;

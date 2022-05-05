@@ -11,10 +11,6 @@ import java.util.Objects;
 import java.util.Stack;
 import javafx.scene.canvas.GraphicsContext;
 
-/**
- *
- * @author HAMDANE
- */
 public class Kruskals extends GenerationAlgorithm {
 
     private Stack<Paire<Cell, Cell>> neighbors;

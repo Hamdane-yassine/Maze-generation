@@ -9,10 +9,7 @@ import java.util.ArrayList;
 import java.util.Stack;
 import javafx.scene.canvas.GraphicsContext;
 
-/**
- *
- * @author HAMDANE
- */
+
 public class SimplifiedPrims extends GenerationAlgorithm {
 
     private final Stack<Cell> Active;

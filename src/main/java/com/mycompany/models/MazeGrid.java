@@ -10,10 +10,6 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Screen;
 
-/**
- *
- * @author HAMDANE
- */
 public final class MazeGrid extends BorderPane {
 
     private final Canvas canvas;

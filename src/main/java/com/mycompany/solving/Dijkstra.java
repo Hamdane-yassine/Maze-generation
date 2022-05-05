@@ -9,10 +9,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import javafx.scene.canvas.GraphicsContext;
 
-/**
- *
- * @author HAMDANE
- */
 public class Dijkstra extends SolvingAlgorithm {
 
     private final HashMap<Cell, Integer> cells;

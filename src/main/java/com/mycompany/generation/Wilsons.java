@@ -8,10 +8,6 @@ import com.mycompany.models.Cell;
 import java.util.ArrayList;
 import javafx.scene.canvas.GraphicsContext;
 
-/**
- *
- * @author HAMDANE
- */
 public class Wilsons extends GenerationAlgorithm {
 
     private final ArrayList<Cell> univisted;

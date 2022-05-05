@@ -11,10 +11,6 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 import javafx.scene.canvas.GraphicsContext;
 
-/**
- *
- * @author HAMDANE
- */
 public class AStar extends SolvingAlgorithm {
 
     private final List<Node> nodes;
