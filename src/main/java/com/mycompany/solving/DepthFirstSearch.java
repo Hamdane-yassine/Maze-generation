@@ -7,6 +7,7 @@ package com.mycompany.solving;
 import com.mycompany.models.Cell;
 import java.util.ArrayList;
 import java.util.Stack;
+import javafx.scene.canvas.GraphicsContext;
 
 /**
  *
@@ -15,36 +16,36 @@ import java.util.Stack;
 public class DepthFirstSearch extends SolvingAlgorithm {
 
     private final Stack<Cell> path;
-    private Cell current;
     private final ArrayList<Cell> visited;
     private ArrayList<Cell> possibleMoves;
 
-    public DepthFirstSearch(Cell root, Cell target, Cell[][] grid) {
-        super(root, target, grid);
+    public DepthFirstSearch(Cell root, Cell target, Cell[][] grid, GraphicsContext gc) {
+        super(root, target, grid, gc);
         this.path = new Stack<>();
         this.current = this.getRoot();
         this.path.push(this.current);
-        this.getRoot().visit();
+        this.getRoot().visit(gc, true);
         this.visited = new ArrayList<>();
         this.visited.add(this.current);
     }
 
     @Override
-    public void update() {
+    public void update(GraphicsContext gc) {
         possibleMoves = availableMoves(current);
         if (!possibleMoves.isEmpty()) {
             this.current = possibleMoves.get(possibleMoves.size() - 1);
             this.visited.add(this.current);
-            this.current.setSelected(true);
+            this.current.select(gc);
             this.path.push(this.current);
 
         } else {
-            this.path.pop().leave();
+            this.path.pop().leave(gc);
             this.current = this.path.peek();
         }
         if (this.getTarget() == this.current) {
-            for(Cell cell : path)
-                cell.setInpath(true);
+            for (Cell cell : path) {
+                cell.InPath(gc);
+            }
             this.setFinished(true);
         }
     }

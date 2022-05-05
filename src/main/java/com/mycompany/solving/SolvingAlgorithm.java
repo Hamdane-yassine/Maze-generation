@@ -6,6 +6,7 @@ package com.mycompany.solving;
 
 import com.mycompany.models.Cell;
 import java.util.ArrayList;
+import javafx.scene.canvas.GraphicsContext;
 
 /**
  *
@@ -17,6 +18,7 @@ public abstract class SolvingAlgorithm {
     private Cell root;
     private Cell target;
     private Cell[][] grid;
+    protected Cell current;
 
     public void setRoot(Cell root) {
         this.root = root;
@@ -26,11 +28,11 @@ public abstract class SolvingAlgorithm {
         this.target = target;
     }
 
-    public SolvingAlgorithm(Cell root, Cell target, Cell[][] grid) {
+    public SolvingAlgorithm(Cell root, Cell target, Cell[][] grid, GraphicsContext gc) {
         this.root = root;
         this.target = target;
-        this.root.setRootTarger(true);
-        this.target.setRootTarger(true);
+        this.root.RootTarged(gc);
+        this.target.RootTarged(gc);
         this.finished = false;
         this.grid = grid;
     }
@@ -55,7 +57,7 @@ public abstract class SolvingAlgorithm {
         this.finished = finished;
     }
 
-    public abstract void update();
+    public abstract void update(GraphicsContext gc);
 
     public boolean isFinished() {
         return finished;

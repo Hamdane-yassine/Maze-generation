@@ -6,7 +6,7 @@ package com.mycompany.generation;
 
 import com.mycompany.models.Cell;
 import java.util.ArrayList;
-import java.util.Random;
+import javafx.scene.canvas.GraphicsContext;
 
 /**
  *
@@ -14,9 +14,7 @@ import java.util.Random;
  */
 public class Wilsons extends GenerationAlgorithm {
 
-    private ArrayList<Cell> univisted;
-    private final Random random = new Random();
-    private Cell SelectedCell;
+    private final ArrayList<Cell> univisted;
 
     public Wilsons(Cell[][] cells, int rows, int columns) {
         super(cells, rows, columns);
@@ -32,15 +30,15 @@ public class Wilsons extends GenerationAlgorithm {
     }
 
     @Override
-    public void update() {
-        this.SelectedCell.leave();
+    public void update(GraphicsContext gc) {
+        this.SelectedCell.leave(gc);
         Cell cell = this.univisted.get(random.nextInt(this.univisted.size()));
-        cell.visit();
+        cell.visit(gc, true);
         this.SelectedCell = cell;
         ArrayList<Cell> path = new ArrayList<>();
         path.add(cell);
         while (this.univisted.contains(cell)) {
-            ArrayList<Cell> neighbours = calculateNeighbours(cell);
+            ArrayList<Cell> neighbours = calculateNeighbours(cell, true);
             cell = neighbours.get(random.nextInt(neighbours.size()));
             int position = path.indexOf(cell);
             if (position >= 0) {
@@ -52,49 +50,18 @@ public class Wilsons extends GenerationAlgorithm {
         }
         for (int i = 0; i < path.size() - 1; i++) {
             path.get(i).link(path.get(i + 1));
-            path.get(i).setVisited(true);
-            path.get(i+1).setVisited(true);
+            path.get(i).visit(gc, false);
+            path.get(i + 1).visit(gc, false);
             this.univisted.remove(path.get(i));
         }
         if (this.univisted.isEmpty()) {
             this.setFinished(true);
-            this.SelectedCell.leave();
+            this.SelectedCell.leave(gc);
         }
-    }
-
-    public ArrayList<Cell> calculateNeighbours(Cell selectedCell) {
-        ArrayList<Cell> localcells = new ArrayList<>();
-        int y = selectedCell.getI();
-        int x = selectedCell.getJ();
-        int leftNeighbourI = selectedCell.getI();
-        int leftNeighbourJ = selectedCell.getJ() - 1;
-        int rightNeighbourI = selectedCell.getI();
-        int rightNeighbourJ = selectedCell.getJ() + 1;
-        int topNeighbourI = selectedCell.getI() - 1;
-        int topNeighbourJ = selectedCell.getJ();
-        int bottomNeighbourI = selectedCell.getI() + 1;
-        int bottomNeighbourJ = selectedCell.getJ();
-
-        if (x - 1 >= 0) {
-            localcells.add(this.getCells()[leftNeighbourI][leftNeighbourJ]);
-        }
-
-        if (x + 1 < this.getColumns()) {
-            localcells.add(this.getCells()[rightNeighbourI][rightNeighbourJ]);
-        }
-
-        if (y - 1 >= 0) {
-            localcells.add(this.getCells()[topNeighbourI][topNeighbourJ]);
-        }
-
-        if (y + 1 < this.getRows()) {
-            localcells.add(this.getCells()[bottomNeighbourI][bottomNeighbourJ]);
-        }
-        return localcells;
     }
 
     public ArrayList<Cell> tracing(int position, ArrayList<Cell> arr) {
-        ArrayList<Cell> result = new ArrayList<Cell>();
+        ArrayList<Cell> result = new ArrayList<>();
         for (int i = 0; i <= position; i++) {
             result.add(arr.get(i));
         }

@@ -7,6 +7,7 @@ package com.mycompany.solving;
 import com.mycompany.models.Cell;
 import java.util.ArrayList;
 import java.util.HashMap;
+import javafx.scene.canvas.GraphicsContext;
 
 /**
  *
@@ -15,12 +16,11 @@ import java.util.HashMap;
 public class Dijkstra extends SolvingAlgorithm {
 
     private final HashMap<Cell, Integer> cells;
-    private Cell current;
     private ArrayList<Cell> frontier;
     private ArrayList<Cell> newFrontier;
 
-    public Dijkstra(Cell root, Cell target, Cell[][] grid) {
-        super(root, target, grid);
+    public Dijkstra(Cell root, Cell target, Cell[][] grid, GraphicsContext gc) {
+        super(root, target, grid, gc);
         this.cells = new HashMap<>();
         this.cells.put(this.getRoot(), 0);
         this.current = this.getTarget();
@@ -29,7 +29,7 @@ public class Dijkstra extends SolvingAlgorithm {
     }
 
     @Override
-    public void update() {
+    public void update(GraphicsContext gc) {
         if (!frontier.isEmpty()) {
             newFrontier = new ArrayList<>();
             for (Cell cell : frontier) {
@@ -38,13 +38,13 @@ public class Dijkstra extends SolvingAlgorithm {
                     if (this.cells.get(linked) == null) {
                         this.cells.put(linked, this.cells.get(cell) + 1);
                         newFrontier.add(linked);
-                        linked.visit();
+                        linked.visit(gc, true);
                     }
                 }
             }
             frontier = newFrontier;
         } else {
-            this.current.setInpath(true);
+            this.current.InPath(gc);
             ArrayList<Cell> links = getLinks(this.current);
             for (Cell neighbor : links) {
                 if (this.cells.get(neighbor) < this.cells.get(this.current)) {
@@ -53,7 +53,7 @@ public class Dijkstra extends SolvingAlgorithm {
                 }
             }
             if (this.current == this.getRoot()) {
-                this.current.setInpath(true);
+                this.current.InPath(gc);
                 this.setFinished(true);
             }
         }
@@ -66,10 +66,6 @@ public class Dijkstra extends SolvingAlgorithm {
 
     public void setDistance(Cell cell, int distance) {
         this.cells.put(cell, distance);
-    }
-
-    public HashMap<Cell, Integer> cells() {
-        return this.cells();
     }
 
 }

@@ -185,17 +185,34 @@ public class Cell {
         to.links.add(arr);
     }
 
-    public void leave() {
+    public void leave(GraphicsContext gc) {
         this.selected = false;
+        this.draw(gc);
     }
 
     private void breakWall(byte id) {
         this.walls[id].setBroken(true);
     }
 
-    public void visit() {
+    public void visit(GraphicsContext gc,boolean select) {
         this.visited = true;
+        this.selected = select;
+        this.draw(gc);
+    }
+    
+    public void InPath(GraphicsContext gc) {
+        this.inpath = true;
+        this.draw(gc);
+    }
+
+    public void RootTarged(GraphicsContext gc) {
+        this.rootTarger = true;
+        this.draw(gc);
+    }
+
+    public void select(GraphicsContext gc) {
         this.selected = true;
+        this.draw(gc);
     }
 
     public int getX() {

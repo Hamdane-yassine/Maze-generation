@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
+import javafx.scene.canvas.GraphicsContext;
 
 /**
  *
@@ -17,17 +18,16 @@ import java.util.Queue;
 public class BreadthFirstSearch extends SolvingAlgorithm {
 
     private final Queue<Cell> queue;
-    private Cell current;
     private final HashMap<Cell, Cell> visited;
     private final LinkedList<Cell> path;
     private Cell assist;
     private ArrayList<Cell> availableMoves;
 
-    public BreadthFirstSearch(Cell root, Cell target, Cell[][] grid) {
-        super(root, target, grid);
+    public BreadthFirstSearch(Cell root, Cell target, Cell[][] grid, GraphicsContext gc) {
+        super(root, target, grid, gc);
         this.queue = new LinkedList<>();
         this.current = this.getRoot();
-        this.getRoot().visit();
+        this.getRoot().visit(gc, true);
         this.visited = new HashMap<>();
         this.visited.put(this.getRoot(), null);
         this.current = this.getRoot();
@@ -37,23 +37,23 @@ public class BreadthFirstSearch extends SolvingAlgorithm {
     }
 
     @Override
-    public void update() {
+    public void update(GraphicsContext gc) {
 
         if (this.current != this.getTarget()) {
             this.availableMoves = availableMoves(current);
             for (Cell cell : this.availableMoves) {
                 visited.put(cell, current);
                 queue.add(cell);
-                cell.visit();
+                cell.visit(gc, true);
             }
             this.current = queue.remove();
         } else {
-            this.assist.setInpath(true);
+            this.assist.InPath(gc);
             this.assist = visited.get(this.assist);
             this.path.addFirst(this.assist);
             if (this.assist == this.getRoot()) {
-                this.assist.setInpath(true);
-                this.setFinished(true);              
+                this.assist.InPath(gc);
+                this.setFinished(true);
             }
         }
 

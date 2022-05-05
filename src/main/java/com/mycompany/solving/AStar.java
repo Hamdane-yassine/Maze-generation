@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
+import javafx.scene.canvas.GraphicsContext;
 
 /**
  *
@@ -24,15 +25,15 @@ public class AStar extends SolvingAlgorithm {
     private final Queue<Node> notTestedNodes;
     private Node parentNode;
 
-    public AStar(Cell root, Cell target, Cell[][] grid) {
-        super(root, target, grid);
+    public AStar(Cell root, Cell target, Cell[][] grid, GraphicsContext gc) {
+        super(root, target, grid, gc);
         this.nodes = new ArrayList<>();
         this.path = new ArrayList<>();
         this.notTestedNodes = new PriorityQueue<>();
         this.setupAlgo();
     }
 
-    public void setupAlgo() {
+    public final void setupAlgo() {
         for (Cell[] arr : this.getGrid()) {
             for (Cell cell : arr) {
                 Node node = new Node(cell);
@@ -57,7 +58,7 @@ public class AStar extends SolvingAlgorithm {
     }
 
     @Override
-    public void update() {
+    public void update(GraphicsContext gc) {
 
         if (!notTestedNodes.isEmpty()) {
             if (currentNode != targetNode) {
@@ -67,7 +68,7 @@ public class AStar extends SolvingAlgorithm {
                 if (!notTestedNodes.isEmpty()) {
                     currentNode = notTestedNodes.poll();
                     currentNode.setIsVisited(true);
-                    currentNode.getCell().setSelected(true);
+                    currentNode.getCell().select(gc);
                     for (Node nodeNeighbor : currentNode.getNeighbors()) {
 
                         if (!nodeNeighbor.isIsVisited()) {
@@ -90,7 +91,7 @@ public class AStar extends SolvingAlgorithm {
             }
         } else {
             if (parentNode != null) {
-                parentNode.getCell().setInpath(true);
+                parentNode.getCell().InPath(gc);
                 path.add(parentNode.getCell());
                 parentNode = parentNode.getParent();
             } else {

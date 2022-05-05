@@ -6,7 +6,7 @@ package com.mycompany.generation;
 
 import com.mycompany.models.Cell;
 import java.util.ArrayList;
-import java.util.Random;
+import javafx.scene.canvas.GraphicsContext;
 
 /**
  *
@@ -15,9 +15,8 @@ import java.util.Random;
 public class AldousBroder extends GenerationAlgorithm {
 
     private int unvisited;
-    private Cell SelectedCell;
-    private final Random random = new Random();
-    private boolean firstCell=true;
+    private boolean firstCell = true;
+
     public AldousBroder(Cell[][] cells, int rows, int columns) {
         super(cells, rows, columns);
         this.SelectedCell = cells[random.nextInt(rows)][random.nextInt(columns)];
@@ -25,59 +24,25 @@ public class AldousBroder extends GenerationAlgorithm {
     }
 
     @Override
-    public void update() {
-        if(this.firstCell)
-        {
-            this.SelectedCell.visit();
-            this.firstCell=false;
-        }else{
-            ArrayList<Cell> neighbours = calculateNeighbours(this.SelectedCell);
+    public void update(GraphicsContext gc) {
+        if (this.firstCell) {
+            this.SelectedCell.visit(gc, true);
+            this.firstCell = false;
+        } else {
+            ArrayList<Cell> neighbours = calculateNeighbours(this.SelectedCell, true);
             Cell neighbour = neighbours.get(random.nextInt(neighbours.size()));
-            if(!neighbour.isLinked())
-            {
+            if (!neighbour.isLinked()) {
                 this.SelectedCell.link(neighbour);
                 this.unvisited--;
             }
-            this.SelectedCell.leave();
-            this.SelectedCell= neighbour;
-            this.SelectedCell.visit();
-            if(this.unvisited <= 0)
-            {
+            this.SelectedCell.leave(gc);
+            this.SelectedCell = neighbour;
+            this.SelectedCell.visit(gc, true);
+            if (this.unvisited <= 0) {
                 this.setFinished(true);
-                this.SelectedCell.leave();
+                this.SelectedCell.leave(gc);
             }
         }
-    }
-
-    public ArrayList<Cell> calculateNeighbours(Cell selectedCell) {
-        ArrayList<Cell> localcells = new ArrayList<>();
-        int y = selectedCell.getI();
-        int x = selectedCell.getJ();
-        int leftNeighbourI = selectedCell.getI();
-        int leftNeighbourJ = selectedCell.getJ() - 1;
-        int rightNeighbourI = selectedCell.getI();
-        int rightNeighbourJ = selectedCell.getJ() + 1;
-        int topNeighbourI = selectedCell.getI() - 1;
-        int topNeighbourJ = selectedCell.getJ();
-        int bottomNeighbourI = selectedCell.getI() + 1;
-        int bottomNeighbourJ = selectedCell.getJ();
-
-        if (x - 1 >= 0) {
-            localcells.add(this.getCells()[leftNeighbourI][leftNeighbourJ]);
-        }
-
-        if (x + 1 < this.getColumns()) {
-            localcells.add(this.getCells()[rightNeighbourI][rightNeighbourJ]);
-        }
-
-        if (y - 1 >= 0) {
-            localcells.add(this.getCells()[topNeighbourI][topNeighbourJ]);
-        }
-
-        if (y + 1 < this.getRows()) {
-            localcells.add(this.getCells()[bottomNeighbourI][bottomNeighbourJ]);
-        }
-        return localcells;
     }
 
 }

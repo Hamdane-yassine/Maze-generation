@@ -9,19 +9,21 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.Stack;
+import javafx.scene.canvas.GraphicsContext;
 
 /**
  *
  * @author HAMDANE
  */
-public class Kruskals extends GenerationAlgorithm{
+public class Kruskals extends GenerationAlgorithm {
 
     private Stack<Paire<Cell, Cell>> neighbors;
     private ArrayList<Integer> setForCells;
     private ArrayList<ArrayList<Cell>> cellsForSet;
-    private Cell leftSelected,rightSelected;
+    private Cell leftSelected, rightSelected;
+
     public Kruskals(Cell[][] cells, int rows, int columns) {
-        super(cells,rows,columns);
+        super(cells, rows, columns);
         this.neighbors = new Stack<>();
         this.setForCells = new ArrayList<>();
         this.cellsForSet = new ArrayList<>();
@@ -29,7 +31,7 @@ public class Kruskals extends GenerationAlgorithm{
         Collections.shuffle(this.neighbors);
     }
 
-    public void Initial() {
+    public final void Initial() {
         for (int i = 0; i < this.getRows(); i++) {
             for (int j = 0; j < this.getColumns(); j++) {
                 int set = this.setForCells.size();
@@ -51,15 +53,14 @@ public class Kruskals extends GenerationAlgorithm{
         return !Objects.equals(this.setForCells.get(left.getId()), this.setForCells.get(right.getId()));
     }
 
-    public void merge(Cell left, Cell right) {
-        if(this.leftSelected!=null && this.rightSelected!=null)
-        {
-            this.leftSelected.leave();
-            this.rightSelected.leave();
+    public void merge(Cell left, Cell right, GraphicsContext gc) {
+        if (this.leftSelected != null && this.rightSelected != null) {
+            this.leftSelected.leave(gc);
+            this.rightSelected.leave(gc);
         }
         left.link(right);
-        left.visit();
-        right.visit();
+        left.visit(gc, true);
+        right.visit(gc, true);
         int winner = this.setForCells.get(left.getId());
         int loser = this.setForCells.get(right.getId());
         ArrayList<Cell> losers = this.cellsForSet.get(loser);
@@ -68,8 +69,8 @@ public class Kruskals extends GenerationAlgorithm{
             this.setForCells.set(cell.getId(), winner);
         }
         this.cellsForSet.get(loser).clear();
-        this.leftSelected=left;
-        this.rightSelected=right;
+        this.leftSelected = left;
+        this.rightSelected = right;
     }
 
     public Cell getLeftSelected() {
@@ -81,18 +82,17 @@ public class Kruskals extends GenerationAlgorithm{
     }
 
     @Override
-    public void update() {
+    public void update(GraphicsContext gc) {
         Paire<Cell, Cell> pair = this.neighbors.pop();
         if (this.canMerge(pair.getFirst(), pair.getSecond())) {
-            this.merge(pair.getFirst(), pair.getSecond());
+            this.merge(pair.getFirst(), pair.getSecond(), gc);
         }
-        if(this.neighbors.isEmpty())
-        {
+        if (this.neighbors.isEmpty()) {
             this.setFinished(true);
-            this.leftSelected.leave();
-            this.rightSelected.leave();
+            this.leftSelected.leave(gc);
+            this.rightSelected.leave(gc);
         }
-        
+
     }
 
     public class Paire<U, V> {

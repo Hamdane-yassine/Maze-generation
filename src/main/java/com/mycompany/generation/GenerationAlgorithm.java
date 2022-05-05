@@ -5,21 +5,66 @@
 package com.mycompany.generation;
 
 import com.mycompany.models.Cell;
+import java.util.ArrayList;
+import java.util.Random;
+import javafx.scene.canvas.GraphicsContext;
 
 /**
  *
  * @author HAMDANE
  */
-public abstract class  GenerationAlgorithm {
+public abstract class GenerationAlgorithm {
+
     private Cell[][] cells;
     private int rows;
     private int columns;
     private boolean finished = false;
+    public Cell SelectedCell;
+    protected Random random = new Random();
 
     public GenerationAlgorithm(Cell[][] cells, int rows, int columns) {
         this.cells = cells;
         this.rows = rows;
         this.columns = columns;
+    }
+
+    public ArrayList<Cell> calculateNeighbours(Cell selectedCell, boolean any) {
+        ArrayList<Cell> localcells = new ArrayList<>();
+        int y = selectedCell.getI();
+        int x = selectedCell.getJ();
+        int leftNeighbourI = selectedCell.getI();
+        int leftNeighbourJ = selectedCell.getJ() - 1;
+        int rightNeighbourI = selectedCell.getI();
+        int rightNeighbourJ = selectedCell.getJ() + 1;
+        int topNeighbourI = selectedCell.getI() - 1;
+        int topNeighbourJ = selectedCell.getJ();
+        int bottomNeighbourI = selectedCell.getI() + 1;
+        int bottomNeighbourJ = selectedCell.getJ();
+
+        if (x - 1 >= 0) {
+            if (!this.getCells()[leftNeighbourI][leftNeighbourJ].isVisited() || any) {
+                localcells.add(this.getCells()[leftNeighbourI][leftNeighbourJ]);
+            }
+        }
+
+        if (x + 1 < this.getColumns()) {
+            if (!this.getCells()[rightNeighbourI][rightNeighbourJ].isVisited() || any) {
+                localcells.add(this.getCells()[rightNeighbourI][rightNeighbourJ]);
+            }
+        }
+
+        if (y - 1 >= 0) {
+            if (!this.getCells()[topNeighbourI][topNeighbourJ].isVisited() || any) {
+                localcells.add(this.getCells()[topNeighbourI][topNeighbourJ]);
+            }
+        }
+
+        if (y + 1 < this.getRows()) {
+            if (!this.getCells()[bottomNeighbourI][bottomNeighbourJ].isVisited() || any) {
+                localcells.add(this.getCells()[bottomNeighbourI][bottomNeighbourJ]);
+            }
+        }
+        return localcells;
     }
 
     public void setCells(Cell[][] cells) {
@@ -53,9 +98,7 @@ public abstract class  GenerationAlgorithm {
     public boolean isFinished() {
         return finished;
     }
-    
 
-
-    public abstract void update();
+    public abstract void update(GraphicsContext gc);
 
 }
