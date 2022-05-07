@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import javafx.scene.image.Image;
 import javafx.stage.Screen;
 
 /**
@@ -19,6 +20,7 @@ public class App extends Application {
         Parent root = FXMLLoader.load(getClass().getResource("Maze.fxml"));
         Scene scene = new Scene(root, Screen.getPrimary().getBounds().getWidth() * 0.95, Screen.getPrimary().getBounds().getHeight() * 0.90);
         stage.setTitle("Génération des labyrinthes");
+        stage.getIcons().add(new Image(getClass().getResourceAsStream("maze.png")));
         stage.setResizable(true);
         stage.setScene(scene);
         stage.show();
