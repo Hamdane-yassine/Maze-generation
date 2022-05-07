@@ -9,4 +9,3 @@ module com.mycompany.main {
     opens com.mycompany.models to javafx.base , com.google.gson;
     exports com.mycompany.main;
 }
-

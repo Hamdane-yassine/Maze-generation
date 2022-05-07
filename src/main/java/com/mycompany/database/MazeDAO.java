@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.mycompany.database;
 
 import com.mycompany.models.MazeModel;
@@ -25,24 +21,24 @@ import javafx.scene.control.Alert;
 public class MazeDAO {
 
     public static Connection connect() {
+        try {
+            URL u = null;
             try {
-                URL u = null;
-                try {
-                    u = new URL(com.mycompany.main.App.class.getResource("/DB/sqlite-jdbc-3.30.1.jar").toString());
-                } catch (MalformedURLException ex) {
-                    Logger.getLogger(MazeDAO.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                URLClassLoader classLoader = new URLClassLoader(new URL[]{u});
-                Driver driver = (Driver) Class.forName("org.sqlite.JDBC", true, classLoader).newInstance();
-                try {
-                    DriverManager.registerDriver(new DelegatingDriver(driver));
-                } catch (SQLException ex) {
-                    Logger.getLogger(MazeDAO.class.getName()).log(Level.SEVERE, null, ex);
-                }
-
-            } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
+                u = new URL(com.mycompany.main.App.class.getResource("/DB/sqlite-jdbc-3.30.1.jar").toString());
+            } catch (MalformedURLException ex) {
+                Logger.getLogger(MazeDAO.class.getName()).log(Level.SEVERE, null, ex);
             }
-            String url = "jdbc:sqlite:mazes.db";
+            URLClassLoader classLoader = new URLClassLoader(new URL[]{u});
+            Driver driver = (Driver) Class.forName("org.sqlite.JDBC", true, classLoader).newInstance();
+            try {
+                DriverManager.registerDriver(new DelegatingDriver(driver));
+            } catch (SQLException ex) {
+                Logger.getLogger(MazeDAO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
+        }
+        String url = "jdbc:sqlite:mazes.db";
         try {
             return DriverManager.getConnection(url);
         } catch (SQLException ex) {
@@ -53,8 +49,7 @@ public class MazeDAO {
 
     public static void SaveMaze(String Name, String algo, String solAlgo, int rows, int columns, String data) {
         try (
-            Connection con = connect();
-            PreparedStatement p = con.prepareStatement("Insert Into maze(Name,Rows,Columns,Date,Algo,SolAlgo,Data) values (?,?,?,?,?,?,?)");) {
+                 Connection con = connect();  PreparedStatement p = con.prepareStatement("Insert Into maze(Name,Rows,Columns,Date,Algo,SolAlgo,Data) values (?,?,?,?,?,?,?)");) {
             p.setString(1, Name);
             p.setInt(2, rows);
             p.setInt(3, columns);
@@ -76,9 +71,7 @@ public class MazeDAO {
     public static ObservableList<MazeModel> GetMazes() {
         ObservableList<MazeModel> list = FXCollections.observableArrayList();
         try (
-            Connection con = MazeDAO.connect();
-            PreparedStatement p = con.prepareStatement("Select * from maze");)
-        {
+                 Connection con = MazeDAO.connect();  PreparedStatement p = con.prepareStatement("Select * from maze");) {
             ResultSet r = p.executeQuery();
             while (r.next()) {
                 list.add(new MazeModel(r.getInt("ID"), r.getString("Name"), r.getInt("Rows"), r.getInt("Columns"), r.getString("Date"), r.getString("Algo"), r.getString("SolAlgo"), r.getString("Data")));
@@ -95,8 +88,7 @@ public class MazeDAO {
 
     public static void DeleteMaze(int ID) {
         try (
-            Connection con = MazeDAO.connect();
-            PreparedStatement p = con.prepareStatement("Delete from maze where ID=?");) {
+                 Connection con = MazeDAO.connect();  PreparedStatement p = con.prepareStatement("Delete from maze where ID=?");) {
             p.setInt(1, ID);
             p.execute();
         } catch (SQLException sq) {
