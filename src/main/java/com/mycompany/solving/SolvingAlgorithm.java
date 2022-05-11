@@ -6,6 +6,11 @@ import javafx.scene.canvas.GraphicsContext;
 
 public abstract class SolvingAlgorithm {
 
+    public static final String DIJKSTRA = "dijkstra";
+    public static final String BFS = "bfs";
+    public static final String DFS = "dfs";
+    public static final String ASTAR = "A*";
+
     private boolean finished;
     private Cell root;
     private Cell target;

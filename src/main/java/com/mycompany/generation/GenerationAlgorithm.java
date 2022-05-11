@@ -7,6 +7,13 @@ import javafx.scene.canvas.GraphicsContext;
 
 public abstract class GenerationAlgorithm {
 
+    public static final String RECURSIVE = "recursive";
+    public static final String KRUSKAL = "kruskal";
+    public static final String ALDOUS = "aldous";
+    public static final String SIMPLEPRIM = "simpleprim";
+    public static final String TRUEPRIM = "trueprim";
+    public static final String WILSON = "wilson";
+
     private Cell[][] cells;
     private int rows;
     private int columns;

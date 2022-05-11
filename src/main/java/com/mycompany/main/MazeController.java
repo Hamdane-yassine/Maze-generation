@@ -44,6 +44,7 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.WritableImage;
@@ -267,6 +268,24 @@ public class MazeController implements Initializable {
         }
     }
 
+    public void GenHelp() {
+        String algo = this.selectedgenAlgo.getSelectionModel().getSelectedItem().toString();
+        switch (algo) {
+            case "Recursive Backtracker" ->
+                this.Help(algo, GenerationAlgorithm.RECURSIVE);
+            case "Kruskal" ->
+                this.Help(algo, GenerationAlgorithm.KRUSKAL);
+            case "Simplified Prim" ->
+                this.Help(algo, GenerationAlgorithm.SIMPLEPRIM);
+            case "True Prim" ->
+                this.Help(algo, GenerationAlgorithm.TRUEPRIM);
+            case "Aldous-Broder" ->
+                this.Help(algo, GenerationAlgorithm.ALDOUS);
+            case "Wilson" ->
+                this.Help(algo, GenerationAlgorithm.WILSON);
+        }
+    }
+
     //solve section
     public void MazeSolving() {
         if (this.genAlgo != null && this.genAlgo.isFinished() || mazecharged) {
@@ -374,6 +393,20 @@ public class MazeController implements Initializable {
         }
     }
 
+    public void SolHelp() {
+        String algo = this.solselect.getSelectionModel().getSelectedItem().toString();
+        switch (algo) {
+            case "Dijkstra" ->
+                this.Help(algo, SolvingAlgorithm.DIJKSTRA);
+            case "Depth First Search" ->
+                this.Help(algo, SolvingAlgorithm.DFS);
+            case "Breadth First Search" ->
+                this.Help(algo, SolvingAlgorithm.BFS);
+            case "A*" ->
+                this.Help(algo, SolvingAlgorithm.ASTAR);
+        }
+    }
+
     //Save and exportation section
     public void ExportImage() {
         WritableImage wi = new WritableImage((int) this.grid.getCanvas().getWidth(), (int) this.grid.getCanvas().getHeight());
@@ -439,7 +472,7 @@ public class MazeController implements Initializable {
     }
     //Maze table 
 
-    public void MazeSettings() throws IOException {
+    public void MazeSettings() {
         Stage popupwindow = new Stage();
         BorderPane Bp = new BorderPane();
         HBox hb = new HBox();
@@ -469,7 +502,6 @@ public class MazeController implements Initializable {
         hb.setSpacing(5);
         Bp.setCenter(tv);
         Bp.setBottom(hb);
-        hb.setAlignment(Pos.CENTER);
         hb.setPrefHeight(46);
         Scene scene1 = new Scene(Bp, 860, 400);
         popupwindow.setResizable(false);
@@ -568,6 +600,24 @@ public class MazeController implements Initializable {
             this.solalgoselected = null;
             this.startSolving = false;
         }
+    }
+
+    public void Help(String title, String info) {
+        Stage popupwindow = new Stage();
+        BorderPane Bp = new BorderPane();
+        TextArea ta = new TextArea();
+        ta.setText(info);
+        ta.setWrapText(true);
+        ta.setEditable(false);
+        ta.setStyle("-fx-focus-color: transparent;-fx-faint-focus-color:transparent;-fx-background-color:black");
+        popupwindow.initModality(Modality.APPLICATION_MODAL);
+        popupwindow.setTitle(title);
+        Bp.setPadding(new Insets(10, 10, 10, 10));
+        Bp.setCenter(ta);
+        Scene scene1 = new Scene(Bp, 500, 350);
+        popupwindow.setResizable(false);
+        popupwindow.setScene(scene1);
+        popupwindow.showAndWait();
     }
 
     public MazeGrid getGrid() {
