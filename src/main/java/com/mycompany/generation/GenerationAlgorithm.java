@@ -71,10 +71,10 @@ public abstract class GenerationAlgorithm {
                                         Il effectue ce qu'on appelle une marche al\u00e9atoire \u00e0 boucle effac\u00e9e, ce qui signifie qu'au fur et \u00e0 mesure, si le chemin qu'il forme se croise et forme une boucle, il efface cette boucle avant de continuer
                                         
                                         L'algorithme est :
-                                        1)Choisissez une cellule arbitraire et ajoutez-la au labyrinthe.
-                                        2)\u00c0 partir de n'importe quelle autre cellule, effectuez une marche al\u00e9atoire effac\u00e9e en boucle jusqu'\u00e0 ce que vous rencontriez une cellule appartenant au labyrinthe.
-                                        3)Ajoutez la marche r\u00e9sultante au labyrinthe.
-                                        4)R\u00e9p\u00e9tez 2 et 3 jusqu'\u00e0 ce que tous les cellules aient \u00e9t\u00e9 ajout\u00e9s au labyrinthe.
+                                        1. Choisissez une cellule arbitraire et ajoutez-la au labyrinthe.
+                                        2. \u00c0 partir de n'importe quelle autre cellule, effectuez une marche al\u00e9atoire effac\u00e9e en boucle jusqu'\u00e0 ce que vous rencontriez une cellule appartenant au labyrinthe.
+                                        3. Ajoutez la marche r\u00e9sultante au labyrinthe.
+                                        4. R\u00e9p\u00e9tez 2 et 3 jusqu'\u00e0 ce que tous les cellules aient \u00e9t\u00e9 ajout\u00e9s au labyrinthe.
                                         """;
 
     private Cell[][] cells;
