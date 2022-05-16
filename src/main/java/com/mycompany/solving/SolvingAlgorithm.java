@@ -6,22 +6,24 @@ import javafx.scene.canvas.GraphicsContext;
 
 public abstract class SolvingAlgorithm {
 
-    public static final String DIJKSTRA = "La recherche de trajectoire a pris de l'importance au début des années 1950 dans le contexte du routage ; c'est-à-dire trouver les directions les plus courtes entre deux nœuds ou plus. En 1956, l'ingénieur logiciel néerlandais Edsger Wybe Dijkstra crée le plus connu de ces algorithmes : Dijkstra.\n"
-            + "\n"
-            + "L'algorithme de Dijkstra trouve le chemin le plus court d'un nœud racine à tous les autres nœuds (jusqu'à ce que la cible soit atteinte). Dijkstra est l'un des algorithmes de graphe les plus utiles ; de plus, il peut facilement être modifié pour résoudre de nombreux problèmes différents.\n"
-            + "\n"
-            + "Cet algorithme commence par un nœud racine (ou de démarrage) et une file d'attente de nœuds candidats. A chaque étape, nous calculons la distance minimale entre la racine et chaque voisin non visité. Ensuite, nous les ajoutons à la file d'attente ; celui avec la distance la plus faible est le prochain qui sera retiré de la file d'attente. Ce processus se répète jusqu'à ce qu'un chemin vers la destination soit trouvé.\n"
-            + "\n"
-            + "Étant donné que les nœuds de distance les plus bas sont examinés en premier, la première fois que la destination est trouvée, le chemin vers celle-ci sera le chemin le plus court.\n"
-            + "\n"
-            + "L'algorithme est :\n"
-            + "Prenons un nœud racine et notons D la distance d'un nœud à la racine. L'algorithme de Dijkstra attribuera des valeurs de distance initiales et les améliorera étape par étape.\n"
-            + "\t1. Définissez la distance de tous les nœuds D sur l'infini, à l'exception du nœud\n"
-            + "\tracine (courant) dont la distance est de 0.\n"
-            + "\t2. Marquer le nœud actuel comme visité et mettre à jour D pour tous ses voisins\n"
-            + "\tnon visités avec la distance la plus courte.\n"
-            + "\t3. Si nous avons atteint le nœud cible on arrétera ici,sinon ajoutez à la file\n"
-            + "\t   d'attente les voisins non visités et revenez à l'étape 2.\n";
+    public static final String DIJKSTRA = """
+                                          La recherche de trajectoire a pris de l'importance au d\u00e9but des ann\u00e9es 1950 dans le contexte du routage ; c'est-\u00e0-dire trouver les directions les plus courtes entre deux n\u0153uds ou plus. En 1956, l'ing\u00e9nieur logiciel n\u00e9erlandais Edsger Wybe Dijkstra cr\u00e9e le plus connu de ces algorithmes : Dijkstra.
+                                          
+                                          L'algorithme de Dijkstra trouve le chemin le plus court d'un n\u0153ud racine \u00e0 tous les autres n\u0153uds (jusqu'\u00e0 ce que la cible soit atteinte). Dijkstra est l'un des algorithmes de graphe les plus utiles ; de plus, il peut facilement \u00eatre modifi\u00e9 pour r\u00e9soudre de nombreux probl\u00e8mes diff\u00e9rents.
+                                          
+                                          Cet algorithme commence par un n\u0153ud racine (ou de d\u00e9marrage) et une file d'attente de n\u0153uds candidats. A chaque \u00e9tape, nous calculons la distance minimale entre la racine et chaque voisin non visit\u00e9. Ensuite, nous les ajoutons \u00e0 la file d'attente ; celui avec la distance la plus faible est le prochain qui sera retir\u00e9 de la file d'attente. Ce processus se r\u00e9p\u00e8te jusqu'\u00e0 ce qu'un chemin vers la destination soit trouv\u00e9.
+                                          
+                                          \u00c9tant donn\u00e9 que les n\u0153uds de distance les plus bas sont examin\u00e9s en premier, la premi\u00e8re fois que la destination est trouv\u00e9e, le chemin vers celle-ci sera le chemin le plus court.
+                                          
+                                          L'algorithme est :
+                                          Prenons un n\u0153ud racine et notons D la distance d'un n\u0153ud \u00e0 la racine. L'algorithme de Dijkstra attribuera des valeurs de distance initiales et les am\u00e9liorera \u00e9tape par \u00e9tape.
+                                          \t1. D\u00e9finissez la distance de tous les n\u0153uds D sur l'infini, \u00e0 l'exception du n\u0153ud
+                                          \tracine (courant) dont la distance est de 0.
+                                          \t2. Marquer le n\u0153ud actuel comme visit\u00e9 et mettre \u00e0 jour D pour tous ses voisins
+                                          \tnon visit\u00e9s avec la distance la plus courte.
+                                          \t3. Si nous avons atteint le n\u0153ud cible on arr\u00e9tera ici,sinon ajoutez \u00e0 la file
+                                          \t   d'attente les voisins non visit\u00e9s et revenez \u00e0 l'\u00e9tape 2.
+                                          """;
     public static final String BFS = """
                                      Breadth First Search (BFS) est l'un des deux algorithmes de parcours de graphe les plus fondamentaux. Publi\u00e9 pour la premi\u00e8re fois en 1959 par Edward F. Moore pour trouver le chemin le plus court hors d'un labyrinthe, il est maintenant utilis\u00e9 quotidiennement non seulement pour la travers\u00e9e r\u00e9guli\u00e8re, mais aussi pour l'analyse des r\u00e9seaux, le GPS, les moteurs de recherche, la planification et d'autres types de graphes.
                                      
