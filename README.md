@@ -103,7 +103,3 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 - Mr. AHIOD Belaid (Project Supervisor)
 - Faculty of Sciences, Rabat
-
-## License
-
-This project is open source and available under the [MIT License](LICENSE).
