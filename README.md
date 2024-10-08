@@ -6,7 +6,7 @@ Maze-generation is a comprehensive application for generating and solving mazes 
 
 ## Demo
 
-![Maze-generation Demo](demo/maze-generation-demo.gif)
+![Maze-generation Demo](maze-generation-demo.gif)
 
 ## Key Features
 
