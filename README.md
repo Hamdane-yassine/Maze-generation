@@ -4,6 +4,10 @@
 
 Maze-generation is a comprehensive application for generating and solving mazes using various algorithms. This project was developed as part of the final year study at the Faculty of Sciences in Rabat for obtaining a bachelor degree in Mathematical and Computer Science.
 
+## Demo
+
+![Maze-generation Demo](demo/maze-generation-demo.gif)
+
 ## Key Features
 
 - Maze generation using multiple algorithms:
